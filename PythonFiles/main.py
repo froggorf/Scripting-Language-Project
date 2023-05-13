@@ -29,23 +29,24 @@ class MainFrame(tk.Frame):
         tk.Frame.__init__(self, root)
         self.master.title("기관지 지킴이")
 
+        #이미지 로드
+        self.LoadAllImage()
+
         #노트북 추가
         self.notebook = tk.ttk.Notebook(root)
         self.notebook.bind('<<NotebookTabChanged>>',self.my_notebook_msg)
         self.notebook.grid(row = 0 , column = 0,sticky = tk.NW)
 
+        #탭0 추가
+        self.tab0_frame = tk.Frame(root)
+        self.notebook.add(self.tab0_frame,image=self.note_tab0_active_image)
+        tk.Label(self.tab0_frame,text="설정 지역 날씨").pack()
+
         #탭1 추가
         self.tab1_frame = tk.Frame(root)
-        self.note_tab1_image = tk.PhotoImage(file = 'Resource\\Note_Tab1.png')
-        self.notebook.add(self.tab1_frame,image=self.note_tab1_image)
-        tk.Label(self.tab1_frame,text="설정 지역 날씨").pack()
 
-        #탭2 추가
-        #self.tab2_frame=tk.Frame(self)
-        self.tab2_frame = tk.Frame(root)
-        self.note_tab2_image = tk.PhotoImage(file='Resource\\Note_Tab1.png')
-        self.notebook.add(self.tab2_frame, image=self.note_tab2_image)
-        #tk.Label(self.tab2_frame, text="지도").pack()
+        self.notebook.add(self.tab1_frame, image=self.note_tab1_inactive_image)
+        #tk.Label(self.tab1_frame, text="지도").pack()
 
 
         # BrowserFrame
@@ -68,9 +69,8 @@ class MainFrame(tk.Frame):
             self.browser_frame.grid_remove()
             self.grid_remove()
 
-
         select_notetab_index =self.notebook.index("current")
-
+        self.SetAllImageToInactive(select_notetab_index)
 
         if(select_notetab_index==0):
             #0번탭에 해당하는 함수를 진행
@@ -87,6 +87,27 @@ class MainFrame(tk.Frame):
             tk.Grid.rowconfigure(self, 0, weight=1)
             tk.Grid.columnconfigure(self, 0, weight=1)
             self.show_browser_frame = True
+
+    def SetAllImageToInactive(self,index):
+        #self.notebook.configure(image = self.note_tab1_inactive_image)
+
+        self.notebook.tab(self.tab0_frame,image = self.note_tab0_inactive_image)
+        self.notebook.tab(self.tab1_frame, image=self.note_tab1_inactive_image)
+
+        if index == 0:
+            self.notebook.tab(self.tab0_frame, image=self.note_tab0_active_image)
+        elif index == 1:
+            self.notebook.tab(self.tab1_frame, image=self.note_tab1_active_image)
+
+
+        pass
+
+    def LoadAllImage(self):
+        self.note_tab0_active_image = tk.PhotoImage(file='Resource\\Note_Tab0_Active.png')
+        self.note_tab0_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab0_Inactive.png')
+        self.note_tab1_active_image = tk.PhotoImage(file='Resource\\Note_Tab1_Active.png')
+        self.note_tab1_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab1_Inactive.png')
+
 
 
 
