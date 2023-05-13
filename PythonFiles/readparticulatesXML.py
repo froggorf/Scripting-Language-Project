@@ -15,16 +15,79 @@ import xml.etree.ElementTree as ET
 
 class Particulates:
     def __init__(self):
-        self.url = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMsrstnAcctoRltmMesureDnsty'
+        self.numOfRows = '100'
+        self.pageNo = '1'
         self.params = {
             'serviceKey': 'LUz3gX6MucCzt3GEJeLI2p1uffZns9cE5YlhQOeNHhZ8Fki40iLenLr8Uz21YPvzHHPlXYmIxhlf9/3a0d1Qow==',
-            'returnType': 'xml', 'numOfRows': '100', 'pageNo': '1', 'stationName': '정왕동', 'dataTerm': 'DAILY',
-            'ver': '1.4'}
+            'returnType': 'xml', 'numOfRows': self.numOfRows, 'pageNo': self.pageNo }
 
+        self.root = None
+        self.items = None
+        self.particulates = []
+
+    def getRoot(self):
+        return self.root
+
+    def getItem(self, str):
+        return self.particulates[str]
+
+    def setParamsUseStationName(self, stationName):
+        self.params['stationName'] = stationName
+
+
+
+# 대기질 예보통보 조회
+class MinuDustFrcstDspth(Particulates):
+    def __init__(self):
+        super().__init__()
+        self.url = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMinuDustFrcstDspth'
+        self.params['searchDate'] = '2023-05-13'
+        self.params['InformCode'] = 'PM10'
+
+        self.setNewResponse()
+
+    def setNewResponse(self):
         response = requests.get(self.url, params=self.params)
         self.root = ET.fromstring(response.text)
         self.items = self.root.findall(".//item")
-        self.particulates = []
+        for item in self.items:
+            particulate = {}
+
+            self.particulates.append((particulate))
+        print("대기질 예보통보 조회 class 생성")
+
+# 초미세먼지 주간예보 조회
+class MinuDustWeekFrcstDspth(Particulates):
+    def __init__(self):
+        super().__init__()
+
+        self.setNewResponse()
+
+    def setNewResponse(self):
+        response = requests.get(self.url, params=self.params)
+        self.root = ET.fromstring(response.text)
+        self.items = self.root.findall(".//item")
+        for item in self.items:
+            particulate = {}
+
+            self.particulates.append((particulate))
+        print("대기질 예보통보 조회 class 생성")
+
+# 측정소별 실시간 측정정보 조회
+class MsrstnAcctoRltmMesureDnsty(Particulates):
+    def __init__(self):
+        super().__init__()
+        self.url = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/' \
+                   'getMsrstnAcctoRltmMesureDnsty'
+        self.params['stationName'] = '정왕동'
+        self.params['dataTerm'] = 'DAILY'
+        self.params['ver'] = '1.4'
+        self.setNewResponse()
+
+    def setNewResponse(self):
+        response = requests.get(self.url, params=self.params)
+        self.root = ET.fromstring(response.text)
+        self.items = self.root.findall(".//item")
         for item in self.items:
             particulate = {
                 "pm10Value": item.findtext("pm10Value"),
@@ -64,11 +127,44 @@ class Particulates:
                 "dataTime": item.findtext("dataTime"),
             }
             self.particulates.append((particulate))
-        print(self.particulates)
+        print("측정소별 실시간 측정정보 조회 class 생성")
 
+# 통합대기환경지수 나쁨 이상 측정소 목록조회
+class UnityAirEnvrnIdexSnstiveAboveMsrstnList(Particulates):
+    def __init__(self):
+        super().__init__()
+
+        self.setNewResponse()
+
+    def setNewResponse(self):
+        response = requests.get(self.url, params=self.params)
+        self.root = ET.fromstring(response.text)
+        self.items = self.root.findall(".//item")
+        for item in self.items:
+            particulate = {}
+
+            self.particulates.append((particulate))
+        print("통합대기환경지수 나쁨 이상 측정소 목록 조회 class 생성")
+
+# 통합대기환경지수 나쁨 이상 측정소 목록조회
+class CtprvnRltmMesureDnsty(Particulates):
+    def __init__(self):
+        super().__init__()
+
+        self.setNewResponse()
+
+    def setNewResponse(self):
+        response = requests.get(self.url, params=self.params)
+        self.root = ET.fromstring(response.text)
+        self.items = self.root.findall(".//item")
+        for item in self.items:
+            particulate = {}
+
+            self.particulates.append((particulate))
+        print("통합대기환경지수 나쁨 이상 측정소 목록 조회 class 생성")
 
 if __name__ == "__main__":
-    parti = Particulates()
+    parti = MsrstnAcctoRltmMesureDnsty()
 
 
 
