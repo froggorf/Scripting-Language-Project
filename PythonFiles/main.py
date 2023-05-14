@@ -1,6 +1,9 @@
 import tkinter as tk                        #tkinter 모듈입니다.
 import tkinter.ttk                          #tkinter.ttk.Notebook 용 모듈입니다.
 from cefpython3 import cefpython as cef     #지도 삽입용 모듈입니다.
+import naverweather
+from datetime import datetime
+import tkinter.font
 
 WINDOW_WIDTH = 800                          #윈도우 가로/세로
 WINDOW_HEIGHT = 1000
@@ -33,6 +36,7 @@ class MainFrame(tk.Frame):
         #이미지 로드
         self.LoadAllImage()
 
+        self.temp_font = tkinter.font.Font(family = "맑은 고딕", size=  20,slant="italic")
 
         #TODO: 후에 UI용 함수화 진행
         # 노트북 추가
@@ -43,7 +47,17 @@ class MainFrame(tk.Frame):
         #탭0 추가
         self.tab0_frame = tk.Frame(root)
         self.notebook.add(self.tab0_frame,image=self.note_tab0_active_image)
-        tk.Label(self.tab0_frame,text="설정 지역 날씨").pack()
+        tk.Label(self.tab0_frame,text="설정 지역 날씨",font=self.temp_font).grid(row=0, column=0)
+        tk.Label(self.tab0_frame,text="현재 지역: ",font=self.temp_font).grid(row=1,column=0)
+        self.tab0_location_label = tk.Label(self.tab0_frame,text="현재 지역",font=self.temp_font)
+        self.tab0_location_label.grid(row=1,column=1)
+        self.tab0_temperature_label = tk.Label(self.tab0_frame,text="온도",font=self.temp_font)
+        self.tab0_temperature_label.grid(row=2,column=0)
+        self.tab0_weather_state_label= tk.Label(self.tab0_frame,text="상태",font=self.temp_font)
+        self.tab0_weather_state_label.grid(row=2,column=1)
+        tk.Label(self.tab0_frame, text = "갱신 시간",font=self.temp_font).grid(row=3,column=0)
+        self.tab0_time_label = tk.Label(self.tab0_frame,text="시간",font=self.temp_font)
+        self.tab0_time_label.grid(row=3,column=1)
 
         #탭1 추가
         self.tab1_frame = tk.Frame(root)
@@ -69,6 +83,13 @@ class MainFrame(tk.Frame):
         #검색 Frame
         self.search_frame = BrowserFrame(self,"https://www.google.com")
 
+    def PrintTab0(self):
+        weathers = naverweather.GetWeatherInformation()
+        self.tab0_location_label.configure(text = weathers[0])
+        self.tab0_temperature_label.configure(text = weathers[1])
+        self.tab0_weather_state_label.configure(text=weathers[2])
+        self.tab0_time_label.configure(text=GetTimeText())
+        pass
 
     #노트북 탭이 바뀔 때 실행될 함수
     def my_notebook_msg(self,_):
@@ -89,7 +110,7 @@ class MainFrame(tk.Frame):
 
         if select_notetab_index == 0:
             #0번탭에 해당하는 함수를 진행
-            pass
+            self.PrintTab0()
 
         elif select_notetab_index == 1:
             #1번탭에 해당하는 함수를 진행
@@ -162,10 +183,6 @@ class MainFrame(tk.Frame):
     def SearchLButton(self,_):
         self.search_entrybox.focus_force()
 
-    def TurnOnWebview(self):
-        location = self.search_entrybox.get()
-        webview.create_window('웹뷰로 검색', url = "https://www.naver.com")
-        webview.start()
 
 
 class BrowserFrame(tk.Frame):           #지도 프레임
@@ -213,6 +230,21 @@ class BrowserFrame(tk.Frame):           #지도 프레임
 def GetNaverWeatherSearch(location):
     return "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + location + "+날씨&oquery=" + location + "&tqi=ibu4pdp0J1ZssTMblOwssssssio-160161"
 
+def GetTimeText():
+    time = datetime.now()
+    text = str(time.year)+"-"
+    if time.month<10: text += "0"
+    text = text + str(time.month)+"-"
+    if time.day < 10:text+="0"
+    text = text+str(time.day)+"  "
+    if time.hour<10:text+="0"
+    text = text + str(time.hour) +":"
+    if time.minute<10: text+="0"
+    text = text + str(time.minute) + ":"
+    if time.second < 10: text += "0"
+    text = text + str(time.second)
+
+    return text
 
 
 if __name__ == '__main__':
