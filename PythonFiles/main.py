@@ -16,6 +16,8 @@ class MainFrame(tk.Frame):
     def __init__(self, root):
         self.browser_frame = None                                       #브라우저(지도) 객체
         self.show_browser_frame=False                                   #브라우저 렌더링 여부 변수
+        self.search_frame = None                                        #브라우저(검색) 객체
+        self.show_search_frame=False                                    #브라우저(검색) 렌더링 여부 변수
         self.root = root                                                #==window(tk.Tk())
 
         #메인 윈도우
@@ -48,18 +50,37 @@ class MainFrame(tk.Frame):
         self.notebook.add(self.tab1_frame, image=self.note_tab1_inactive_image)
         #tk.Label(self.tab1_frame, text="지도").pack()
 
+        #탭2 추가
+        self.tab2_frame=tk.Frame(root)
+        self.notebook.add(self.tab2_frame,image = self.note_tab2_inactive_image)
+        tk.Label(self.tab2_frame,text="날씨를 검색할 지역 이름을 적어주세요 ex) 정왕").grid(row=0,column=0)
+
+        self.search_entrybox = tk.Entry(self.tab2_frame)
+        self.search_entrybox.bind("<Return>",self.SearchInput)
+        self.search_entrybox.bind("<Button-1>", self.SearchLButton)
+        self.search_entrybox.grid(row=0,column=1)
+
+        tk.Button(self.tab2_frame,text="검색",command= lambda x = None : self.SearchInput(x)).grid(row=0,column=2)
+
 
         # BrowserFrame
-        self.browser_frame = BrowserFrame(self)
+        self.browser_frame = BrowserFrame(self,"https://weather.naver.com/map/02390118")
+
+        #검색 Frame
+        self.search_frame = BrowserFrame(self,"https://www.google.com")
 
 
     #노트북 탭이 바뀔 때 실행될 함수
     def my_notebook_msg(self,_):
-        if self.show_browser_frame == True: #지도가 보이고 있을 때
+        if self.show_browser_frame: #지도가 보이고 있을 때
             self.show_browser_frame=False   #지도가 안보이도록 설정
             self.browser_frame.grid_remove()
             self.grid_remove()
 
+        if self.show_search_frame:
+            self.show_search_frame=False
+            self.search_frame.grid_remove()
+            self.grid_remove()
         #현재 선택된 탭 인덱스 받아오기
         select_notetab_index =self.notebook.index("current")
 
@@ -84,18 +105,24 @@ class MainFrame(tk.Frame):
             tk.Grid.columnconfigure(self, 0, weight=1)
             self.show_browser_frame = True
 
+        elif select_notetab_index == 2:
+            pass
+
+
     #노트북의 탭 이미지 활성화/비활성화
     def SetAllImageToInactive(self,index):
         #self.notebook.configure(image = self.note_tab1_inactive_image)
-
-        self.notebook.tab(self.tab0_frame,image = self.note_tab0_inactive_image)
-        self.notebook.tab(self.tab1_frame, image=self.note_tab1_inactive_image)
+        self.notebook.tab(self.tab0_frame, image = self.note_tab0_inactive_image)
+        self.notebook.tab(self.tab1_frame, image = self.note_tab1_inactive_image)
+        self.notebook.tab(self.tab2_frame, image = self.note_tab2_inactive_image)
 
         #TODO: 나중에 배열로 리팩토링 진행해보기
         if index == 0:
             self.notebook.tab(self.tab0_frame, image=self.note_tab0_active_image)
         elif index == 1:
             self.notebook.tab(self.tab1_frame, image=self.note_tab1_active_image)
+        elif index == 2:
+            self.notebook.tab(self.tab2_frame, image=self.note_tab2_active_image)
 
     #모든 이미지 로드
     def LoadAllImage(self):
@@ -103,17 +130,52 @@ class MainFrame(tk.Frame):
         self.note_tab0_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab0_Inactive.png')
         self.note_tab1_active_image = tk.PhotoImage(file='Resource\\Note_Tab1_Active.png')
         self.note_tab1_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab1_Inactive.png')
+        self.note_tab2_active_image = tk.PhotoImage(file='Resource\\Note_Tab2_Active.png')
+        self.note_tab2_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab2_Inactive.png')
 
+    def SearchInput(self,_):
+        # 브라우저가 켜져있다면
+        if self.show_search_frame:
+            #url만 바꾸기
+            location = self.search_entrybox.get()
+            self.search_entrybox.delete(0,len(location))
+            self.search_frame.LoadUrl(GetNaverWeatherSearch(location))
 
+        else:
+            self.search_frame.grid(row=0, column=0,
+                                   sticky=(tk.N + tk.S + tk.E + tk.W))
+            tk.Grid.rowconfigure(self, 0, weight=1)
+            tk.Grid.columnconfigure(self, 0, weight=1)
+            self.grid(row=3, column=0, ipadx=500, ipady=300, sticky=tk.NW)
 
+            tk.Grid.rowconfigure(self, 0, weight=1)
+            tk.Grid.columnconfigure(self, 0, weight=1)
+            self.show_search_frame = True
+            location = self.search_entrybox.get()
+            self.search_entrybox.delete(0,len(location))
+
+            if self.search_frame.GetBrowser():
+                self.search_frame.LoadUrl(GetNaverWeatherSearch(location))
+            else:
+                self.search_frame.SetInitUrl(GetNaverWeatherSearch((location)))
+
+    def SearchLButton(self,_):
+        self.search_entrybox.focus_force()
+
+    def TurnOnWebview(self):
+        location = self.search_entrybox.get()
+        webview.create_window('웹뷰로 검색', url = "https://www.naver.com")
+        webview.start()
 
 
 class BrowserFrame(tk.Frame):           #지도 프레임
-    def __init__(self, mainframe):
+    def __init__(self, mainframe,url):
         self.browser = None
         tk.Frame.__init__(self, mainframe)
         self.mainframe = mainframe
+        self.url = url
         self.bind("<Configure>", self.on_configure)
+        #self.on_configure(None)
 
     #브라우저 가져오기 및 tkinter에 내장하는 함수
     def embed_browser(self):
@@ -121,7 +183,7 @@ class BrowserFrame(tk.Frame):           #지도 프레임
         rect = [50,50, self.winfo_width()-50, self.winfo_height()-50]   #상위윈도우 영역 기반 보일 영역 잡기
         window_info.SetAsChild(self.get_window_handle(), rect)          #상위 윈도우의 차일드 윈도우 속성으로 내장되도록 설정
         self.browser = cef.CreateBrowserSync(window_info,               #브라우저 객체 생성
-                                             url="https://weather.naver.com/map/02390118")
+                                             url=self.url)
         self.message_loop_work()                                        #메시지 루프 입장
 
     def get_window_handle(self):
@@ -129,12 +191,28 @@ class BrowserFrame(tk.Frame):           #지도 프레임
 
     def message_loop_work(self):
         cef.MessageLoopWork()                                           #메시지를 받고
-        self.after(10, self.message_loop_work)                          #10ms이후 다시 메시지루프로 가도록, 이방식으로 진행해야 메인 윈도우가 실행 가능해지는 것으로 확인.
+        self.after(1, self.message_loop_work)                          #10ms이후 다시 메시지루프로 가도록, 이방식으로 진행해야 메인 윈도우가 실행 가능해지는 것으로 확인.
 
     #설정될 때 실행될 함수
     def on_configure(self, _):
         if not self.browser:
             self.embed_browser()
+
+    def GetBrowser(self):
+        if self.browser:
+            return self.browser
+
+    def LoadUrl(self,url):
+        if self.browser:
+            self.browser.StopLoad()
+            self.browser.LoadUrl(url)
+
+    def SetInitUrl(self,url):
+        self.url = url
+
+def GetNaverWeatherSearch(location):
+    return "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + location + "+날씨&oquery=" + location + "&tqi=ibu4pdp0J1ZssTMblOwssssssio-160161"
+
 
 
 if __name__ == '__main__':
