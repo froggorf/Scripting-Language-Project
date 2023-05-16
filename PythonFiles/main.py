@@ -29,12 +29,12 @@ class MainFrame(tk.Frame):
         tk.Grid.rowconfigure(root, 0, weight=1)
         tk.Grid.columnconfigure(root, 0, weight=1)
 
+        #이미지 로드
+        self.LoadAllImage()
 
         #메인 프레임
         tk.Frame.__init__(self, root)
-
-        #이미지 로드
-        self.LoadAllImage()
+        
 
         self.temp_font = tkinter.font.Font(family = "맑은 고딕", size=  20,slant="italic")
 
@@ -42,7 +42,7 @@ class MainFrame(tk.Frame):
         # 노트북 추가
         self.notebook = tk.ttk.Notebook(root)
         self.notebook.bind('<<NotebookTabChanged>>',self.my_notebook_msg)
-        self.notebook.grid(row = 0 , column = 0,sticky = tk.NW)
+        self.notebook.grid(row = 0 , column = 0,sticky = tk.N + tk.W + tk.E + tk.S)
 
         #탭0 추가
         self.tab0_frame = tk.Frame(root)
@@ -58,6 +58,7 @@ class MainFrame(tk.Frame):
         tk.Label(self.tab0_frame, text = "갱신 시간",font=self.temp_font).grid(row=3,column=0)
         self.tab0_time_label = tk.Label(self.tab0_frame,text="시간",font=self.temp_font)
         self.tab0_time_label.grid(row=3,column=1)
+        tk.Button(self.tab0_frame,text = "갱신",font = self.temp_font,command = self.PrintTab0).grid(row=3,column=2)
 
         #탭1 추가
         self.tab1_frame = tk.Frame(root)
@@ -67,17 +68,17 @@ class MainFrame(tk.Frame):
         #탭2 추가
         self.tab2_frame=tk.Frame(root)
         self.notebook.add(self.tab2_frame,image = self.note_tab2_inactive_image)
-        tk.Label(self.tab2_frame,text="날씨를 검색할 지역 이름을 적어주세요 ex) 정왕").grid(row=0,column=0)
+        tk.Label(self.tab2_frame,text="날씨를 검색할 지역 이름을 적어주세요 ex) 정왕 엔터도됨").grid(row=0,column=0)
 
-        self.search_entrybox = tk.Entry(self.tab2_frame)
+        self.search_entrybox = tk.Entry(self.tab2_frame,font=  self.temp_font)
         self.search_entrybox.bind("<Return>",self.SearchInput)
         self.search_entrybox.bind("<Button-1>", self.SearchLButton)
         self.search_entrybox.grid(row=0,column=1)
 
-        tk.Button(self.tab2_frame,text="검색",command= lambda x = None : self.SearchInput(x)).grid(row=0,column=2)
+        tk.Button(self.tab2_frame,text="검색",command= lambda x = None : self.SearchInput(x),font = self.temp_font).grid(row=0,column=2)
 
 
-        # BrowserFrame
+        #지도 Frame
         self.browser_frame = BrowserFrame(self,"https://weather.naver.com/map/02390118")
 
         #검색 Frame
@@ -153,6 +154,7 @@ class MainFrame(tk.Frame):
         self.note_tab1_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab1_Inactive.png')
         self.note_tab2_active_image = tk.PhotoImage(file='Resource\\Note_Tab2_Active.png')
         self.note_tab2_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab2_Inactive.png')
+        self.main_image = tk.PhotoImage(file = 'Resource\\MainImage.png')
 
     def SearchInput(self,_):
         # 브라우저가 켜져있다면
