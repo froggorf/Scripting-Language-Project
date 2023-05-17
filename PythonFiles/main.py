@@ -7,18 +7,48 @@ import tkinter.font
 
 WINDOW_WIDTH = 800  # 윈도우 가로/세로
 WINDOW_HEIGHT = 1000
-
+BACKGROUNDCOLOR = '#AAAAAA'
+temp_font = None
 
 def main():
     root = tk.Tk()
     app = MainFrame(root)
     cef.Initialize()
+
     app.mainloop()
     cef.Shutdown()
 
 
 class MainFrame(tk.Frame):
     def __init__(self, root):
+        temp_font = tkinter.font.Font(family="맑은 고딕", size=20, slant="italic")
+
+        style = tk.ttk.Style()
+        #current_theme = style.theme_use()
+
+        style.element_create('Plain.Notebook.tab', "from", 'default')
+        # Redefine the TNotebook Tab layout to use the new element
+        style.layout("TNotebook.Tab",
+                          [('Plain.Notebook.tab', {'children':
+                                                       [('Notebook.padding', {'side': 'top', 'children':
+                                                           [('Notebook.focus', {'side': 'top', 'children':
+                                                               [('Notebook.label', {'side': 'top', 'sticky': ''})],
+                                                                                'sticky': 'nswe'})],
+                                                                              'sticky': 'nswe'})],
+                                                   'sticky': 'nswe'})])
+        style.configure("TNotebook", background=BACKGROUNDCOLOR, borderwidth=0)
+        style.configure("TNotebook.Tab",
+                        background = BACKGROUNDCOLOR,
+                        foreground='black',
+                        lightcolor='black',
+                        borderwidth=1,
+                        font = temp_font,
+                        bordermode="inside",
+                        padding = [10,5]
+                        )
+        style.configure("TFrame", background=BACKGROUNDCOLOR, foreground=BACKGROUNDCOLOR, borderwidth=0)
+
+
         self.browser_frame = None  # 브라우저(지도) 객체
         self.show_browser_frame = False  # 브라우저 렌더링 여부 변수
         self.search_frame = None  # 브라우저(검색) 객체
@@ -31,7 +61,7 @@ class MainFrame(tk.Frame):
         tk.Grid.rowconfigure(root, 0, weight=1)
         tk.Grid.columnconfigure(root, 0, weight=1)
         root.bind('<Escape>', self.close_window)
-        tk.Label(root, bg = 'blue4',width = WINDOW_WIDTH,height = WINDOW_HEIGHT).place(x=0, y=0)
+        tk.Label(root, bg = BACKGROUNDCOLOR,width = WINDOW_WIDTH,height = WINDOW_HEIGHT).place(x=0, y=0)
         #root.attributes('-alpha',0.5)
 
         # 이미지 로드
@@ -41,46 +71,48 @@ class MainFrame(tk.Frame):
         super(MainFrame, self).__init__(root,highlightbackground="black",highlightthickness=10)
         #tk.Frame.__init__(self, root)
 
-        self.temp_font = tkinter.font.Font(family="맑은 고딕", size=20, slant="italic")
+
 
         # TODO: 후에 UI용 함수화 진행
         # 노트북 추가
-        self.notebook = tk.ttk.Notebook(root)
+        self.notebook = tk.ttk.Notebook(root,width = WINDOW_WIDTH-50,height = WINDOW_HEIGHT-100)
         self.notebook.bind('<<NotebookTabChanged>>', self.my_notebook_msg)
-        self.notebook.place(x=0,y=0)
+        self.notebook.place(x=25,y=20)
+
 
         # 탭0 추가
         self.tab0_frame = tk.Frame(root)
-        self.notebook.add(self.tab0_frame, image=self.note_tab0_active_image)
-        tk.Label(self.tab0_frame, text="설정 지역 날씨", font=self.temp_font).grid(row=0, column=0)
-        tk.Label(self.tab0_frame, text="현재 지역: ", font=self.temp_font).grid(row=1, column=0)
-        self.tab0_location_label = tk.Label(self.tab0_frame, text="현재 지역", font=self.temp_font)
+        self.notebook.add(self.tab0_frame, text = "지역 날씨")
+        tk.Label(self.tab0_frame, text="설정 지역 날씨", font=temp_font).grid(row=0, column=0)
+        tk.Label(self.tab0_frame, text="현재 지역: ", font=temp_font).grid(row=1, column=0)
+        self.tab0_location_label = tk.Label(self.tab0_frame, text="현재 지역", font=temp_font)
         self.tab0_location_label.grid(row=1, column=1)
-        self.tab0_temperature_label = tk.Label(self.tab0_frame, text="온도", font=self.temp_font)
+        self.tab0_temperature_label = tk.Label(self.tab0_frame, text="온도", font=temp_font)
         self.tab0_temperature_label.grid(row=2, column=0)
-        self.tab0_weather_state_label = tk.Label(self.tab0_frame, text="상태", font=self.temp_font)
+        self.tab0_weather_state_label = tk.Label(self.tab0_frame, text="상태", font=temp_font)
         self.tab0_weather_state_label.grid(row=2, column=1)
-        tk.Label(self.tab0_frame, text="갱신 시간", font=self.temp_font).grid(row=3, column=0)
-        self.tab0_time_label = tk.Label(self.tab0_frame, text="시간", font=self.temp_font)
+        tk.Label(self.tab0_frame, text="갱신 시간", font=temp_font).grid(row=3, column=0)
+        self.tab0_time_label = tk.Label(self.tab0_frame, text="시간", font=temp_font)
         self.tab0_time_label.grid(row=3, column=1)
-        tk.Button(self.tab0_frame, text="갱신", font=self.temp_font, command=self.PrintTab0).grid(row=3, column=2)
+        tk.Button(self.tab0_frame, text="갱신", font=temp_font, command=self.PrintTab0).grid(row=3, column=2)
+
 
         # 탭1 추가
         self.tab1_frame = tk.Frame(root)
-        self.notebook.add(self.tab1_frame, image=self.note_tab1_inactive_image)
+        self.notebook.add(self.tab1_frame, text = "지도")
         # tk.Label(self.tab1_frame, text="지도").pack()
 
         # 탭2 추가
         self.tab2_frame = tk.Frame(root)
-        self.notebook.add(self.tab2_frame, image=self.note_tab2_inactive_image)
+        self.notebook.add(self.tab2_frame, text = "검색")
         tk.Label(self.tab2_frame, text="날씨를 검색할 지역 이름을 적어주세요 ex) 정왕 엔터도됨").grid(row=0, column=0)
 
-        self.search_entrybox = tk.Entry(self.tab2_frame, font=self.temp_font)
+        self.search_entrybox = tk.Entry(self.tab2_frame, font=temp_font)
         self.search_entrybox.bind("<Return>", self.SearchInput)
         self.search_entrybox.bind("<Button-1>", self.SearchLButton)
         self.search_entrybox.grid(row=0, column=1)
 
-        tk.Button(self.tab2_frame, text="검색", command=lambda x=None: self.SearchInput(x), font=self.temp_font).grid(
+        tk.Button(self.tab2_frame, text="검색", command=lambda x=None: self.SearchInput(x), font=temp_font).grid(
             row=0, column=2)
 
         # 지도 Frame
@@ -89,6 +121,8 @@ class MainFrame(tk.Frame):
                                 sticky=(tk.N + tk.S + tk.E + tk.W))
         # 검색 Frame
         self.search_frame = BrowserFrame(self, "https://www.google.com")
+
+        tk.Label(root, text="기관지 지킴이",font = temp_font,background=BACKGROUNDCOLOR).place(x=600,y=25)
 
     def PrintTab0(self):
         weathers = naverweather.GetWeatherInformation()
@@ -102,7 +136,7 @@ class MainFrame(tk.Frame):
     def my_notebook_msg(self, _):
         if self.show_browser_frame:  # 지도가 보이고 있을 때
             self.show_browser_frame = False  # 지도가 안보이도록 설정
-            #self.browser_frame.grid_remove()
+            self.browser_frame.grid_remove()
             self.grid_remove()
 
         if self.show_search_frame:
@@ -113,7 +147,7 @@ class MainFrame(tk.Frame):
         select_notetab_index = self.notebook.index("current")
 
         # 현재 선택된 탭은 Active로, 나머지는 Inactive로 이미지 수정
-        self.SetAllImageToInactive(select_notetab_index)
+        #self.SetAllImageToInactive(select_notetab_index)
 
         if select_notetab_index == 0:
             # 0번탭에 해당하는 함수를 진행
@@ -123,10 +157,10 @@ class MainFrame(tk.Frame):
             # 1번탭에 해당하는 함수를 진행
             # 지도를 보이도록 추가
 
-
+            self.browser_frame.grid(row=0, column=0,
+                                   sticky=(tk.N + tk.S + tk.E + tk.W))
             tk.Grid.rowconfigure(self, 0, weight=1)
             tk.Grid.columnconfigure(self, 0, weight=1)
-            #self.place(x=0, y=0, ipadx = 600, ipady=450)
             self.grid(row=3, column=0, padx=20, ipady =430,pady = 20,sticky=tk.N+tk.E+tk.W+tk.S)
             self.lift()
             self.show_browser_frame = True
@@ -137,13 +171,14 @@ class MainFrame(tk.Frame):
     # 노트북의 탭 이미지 활성화/비활성화
     def SetAllImageToInactive(self, index):
         # self.notebook.configure(image = self.note_tab1_inactive_image)
-        self.notebook.tab(self.tab0_frame, image=self.note_tab0_inactive_image)
-        self.notebook.tab(self.tab1_frame, image=self.note_tab1_inactive_image)
-        self.notebook.tab(self.tab2_frame, image=self.note_tab2_inactive_image)
+        #self.notebook.tab(self.tab0_frame, image=self.note_tab0_inactive_image)
+        #self.notebook.tab(self.tab1_frame, image=self.note_tab1_inactive_image)
+        #self.notebook.tab(self.tab2_frame, image=self.note_tab2_inactive_image)
 
         # TODO: 나중에 배열로 리팩토링 진행해보기
         if index == 0:
-            self.notebook.tab(self.tab0_frame, image=self.note_tab0_active_image)
+            pass
+            #self.notebook.tab(self.tab0_frame, image=self.note_tab0_active_image)
         elif index == 1:
             self.notebook.tab(self.tab1_frame, image=self.note_tab1_active_image)
         elif index == 2:
