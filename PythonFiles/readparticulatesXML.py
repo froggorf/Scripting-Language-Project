@@ -51,8 +51,33 @@ class MinuDustFrcstDspth(Particulates):
         self.root = ET.fromstring(response.text)
         self.items = self.root.findall(".//item")
         for item in self.items:
-            particulate = {}
+            particulate = {
+                "resultCode": item.findtext("resultCode"),
+                "resultMsg": item.findtext("resultMsg"),
+                "numOfRows": item.findtext("numOfRows"),
+                "pageNo": item.findtext("pageNo"),
+                "totalCount": item.findtext("totalCount"),
 
+                "informCode": item.findtext("informCode"),
+                "informOverall": item.findtext("informOverall"),
+                "informCause": item.findtext("informCause"),
+                "informGrade": item.findtext("informGrade"),
+                "informData": item.findtext("informData"),
+
+                "items": item.findtext("items"),
+                "dataTime": item.findtext("dataTime"),
+                "actionKnack": item.findtext("actionKnack"),
+
+                "imageUrl1": item.findtext("imageUrl1"),
+                "imageUrl2": item.findtext("imageUrl2"),
+                "imageUrl3": item.findtext("imageUrl3"),
+                "imageUrl4": item.findtext("imageUrl4"),
+                "imageUrl5": item.findtext("imageUrl5"),
+                "imageUrl6": item.findtext("imageUrl6"),
+                "imageUrl7": item.findtext("imageUrl7"),
+                "imageUrl8": item.findtext("imageUrl8"),
+                "imageUrl9": item.findtext("imageUrl9"),
+            }
             self.particulates.append((particulate))
         print("대기질 예보통보 조회 class 생성")
 
@@ -60,6 +85,8 @@ class MinuDustFrcstDspth(Particulates):
 class MinuDustWeekFrcstDspth(Particulates):
     def __init__(self):
         super().__init__()
+        self.url = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getMinuDustWeekFrcstDspth'
+        self.params['searchDate'] = '2023-05-13'
 
         self.setNewResponse()
 
@@ -68,8 +95,25 @@ class MinuDustWeekFrcstDspth(Particulates):
         self.root = ET.fromstring(response.text)
         self.items = self.root.findall(".//item")
         for item in self.items:
-            particulate = {}
+            particulate = {
+                "resultCode": item.findtext("resultCode"),
+                "resultMsg": item.findtext("resultMsg"),
+                "numOfRows": item.findtext("numOfRows"),
+                "pageNo": item.findtext("pageNo"),
+                "totalCount": item.findtext("totalCount"),
 
+                "frcstOneCn": item.findtext("frcstOneCn"),
+                "frcstTwoCn": item.findtext("frcstTwoCn"),
+                "frcstThreeCn": item.findtext("frcstThreeCn"),
+                "frcstFourCn": item.findtext("frcstFourCn"),
+
+                "presnatnDT": item.findtext("presnatnDT"),
+
+                "frcstOneDt": item.findtext("frcstOneDt"),
+                "frcstTwoDt": item.findtext("frcstTwoDt"),
+                "frcstThreeDt": item.findtext("frcstThreeDt"),
+                "frcstFourDt": item.findtext("frcstFourDt"),
+            }
             self.particulates.append((particulate))
         print("대기질 예보통보 조회 class 생성")
 
@@ -90,6 +134,13 @@ class MsrstnAcctoRltmMesureDnsty(Particulates):
         self.items = self.root.findall(".//item")
         for item in self.items:
             particulate = {
+                "resultCode": item.findtext("resultCode"),
+                "resultMsg": item.findtext("resultMsg"),
+                "numOfRows": item.findtext("numOfRows"),
+                "pageNo": item.findtext("pageNo"),
+                "totalCount": item.findtext("totalCount"),
+                "items": item.findtext("items"),
+
                 "pm10Value": item.findtext("pm10Value"),
                 "pm10Grade": item.findtext("pm10Grade"),
                 "pm10Value24": item.findtext("pm10Value24"),
@@ -133,6 +184,8 @@ class MsrstnAcctoRltmMesureDnsty(Particulates):
 class UnityAirEnvrnIdexSnstiveAboveMsrstnList(Particulates):
     def __init__(self):
         super().__init__()
+        self.url = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/' \
+                   'getUnityAirEnvrnIdexSnstiveAboveMsrstnList'
 
         self.setNewResponse()
 
@@ -141,16 +194,28 @@ class UnityAirEnvrnIdexSnstiveAboveMsrstnList(Particulates):
         self.root = ET.fromstring(response.text)
         self.items = self.root.findall(".//item")
         for item in self.items:
-            particulate = {}
+            particulate = {
+                "resultCode": item.findtext("resultCode"),
+                "resultMsg": item.findtext("resultMsg"),
+                "numOfRows": item.findtext("numOfRows"),
+                "pageNo": item.findtext("pageNo"),
+                "totalCount": item.findtext("totalCount"),
 
+                "items": item.findtext("items"),
+                "stationName": item.findtext("stationName"),
+                "addr": item.findtext("addr"),
+            }
             self.particulates.append((particulate))
         print("통합대기환경지수 나쁨 이상 측정소 목록 조회 class 생성")
 
-# 통합대기환경지수 나쁨 이상 측정소 목록조회
+# 시도별 실시간 측정정보 조회
 class CtprvnRltmMesureDnsty(Particulates):
     def __init__(self):
         super().__init__()
-
+        self.url = 'http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/' \
+                   'getCtprvnRltmMesureDnsty'
+        self.params['sidoName'] = '서울'
+        self.params['ver'] = '1.4'
         self.setNewResponse()
 
     def setNewResponse(self):
@@ -158,7 +223,50 @@ class CtprvnRltmMesureDnsty(Particulates):
         self.root = ET.fromstring(response.text)
         self.items = self.root.findall(".//item")
         for item in self.items:
-            particulate = {}
+            particulate = {
+                "resultCode": item.findtext("resultCode"),
+                "resultMsg": item.findtext("resultMsg"),
+                "numOfRows": item.findtext("numOfRows"),
+                "pageNo": item.findtext("pageNo"),
+                "totalCount": item.findtext("totalCount"),
+                "items": item.findtext("items"),
+
+                "pm10Value": item.findtext("pm10Value"),
+                "pm10Grade": item.findtext("pm10Grade"),
+                "pm10Value24": item.findtext("pm10Value24"),
+                "pm10Grade1h": item.findtext("pm10Grade1h"),
+                "pm10Flag": item.findtext("pm10Flag"),
+
+                "pm25Value": item.findtext("pm25Value"),
+                "pm25Grade": item.findtext("pm25Grade"),
+                "pm25Value24": item.findtext("pm25Value24"),
+                "pm25Grade1h": item.findtext("pm25Grade1h"),
+                "pm25Flag": item.findtext("pm25Flag"),
+
+                "khaiValue": item.findtext("khaiValue"),
+                "khaiGrade": item.findtext("khaiGrade"),
+
+                "no2Value": item.findtext("no2Value"),
+                "no2Grade": item.findtext("no2Grade"),
+                "no2Flag": item.findtext("no2Flag"),
+
+                "so2Value": item.findtext("so2Value"),
+                "so2Grade": item.findtext("so2Grade"),
+                "so2Flag": item.findtext("so2Flag"),
+
+                "o3Value": item.findtext("o3Value"),
+                "o3Grade": item.findtext("o3Grade"),
+                "o3Flag": item.findtext("o3Flag"),
+
+                "stationName": item.findtext("stationName"),
+                "stationCode": item.findtext("stationCode"),
+
+                "coValue": item.findtext("coValue"),
+                "coFlag": item.findtext("coFlag"),
+                "coGrade": item.findtext("coGrade"),
+
+                "dataTime": item.findtext("dataTime"),
+            }
 
             self.particulates.append((particulate))
         print("통합대기환경지수 나쁨 이상 측정소 목록 조회 class 생성")
