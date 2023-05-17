@@ -54,6 +54,7 @@ class MainFrame(tk.Frame):
 
         # 이미지 로드
         self.LoadAllImage()
+        self.LoadWeatherIcon()
 
         # 메인 프레임
         super(MainFrame, self).__init__(root,highlightbackground="black",highlightthickness=10)
@@ -143,19 +144,21 @@ class MainFrame(tk.Frame):
         self.DrawGraph()
 
     def DrawGraph(self):
-        #0 ~ 200 을 - 온도맥스+10 ~ 온도min-10
-        #200이라는 숫자를 diffdegree로 나누면 1' 당의 차이가 나옴
-        #
-        maxdegree = max(self.weather_per_hour[2]) + 10
-        mindegree = min(self.weather_per_hour[2]) - 10
+        #0 ~ 150 을 - 온도맥스+5 ~ 온도min-5
+        self.graph_canvas.delete("all")
+        maxdegree = max(self.weather_per_hour[2]) + 5
+        mindegree = min(self.weather_per_hour[2]) - 5
         diffdegree = abs(maxdegree-mindegree)
         gap = 100
         prev_x = 0
         prev_y = 0
+        self.graph_canvas.create_text(20, 10,text= str(maxdegree)+'°',font = ('Arial',14))
+        self.graph_canvas.create_text(20, 150, text=str(mindegree) + '°', font=('Arial', 14))
         for index, data in enumerate(self.weather_per_hour[2]):
             x = index * gap + gap/2
             percent = (data - mindegree) / (maxdegree-mindegree)
-            y = 200- percent*200
+            y = 150 - percent*150
+            print(y)
             if prev_x == 0 :
                 prev_x = x
                 prev_y = y
@@ -163,11 +166,24 @@ class MainFrame(tk.Frame):
             self.graph_canvas.create_line(prev_x,prev_y,x,y)
             prev_x = x
             prev_y = y
-            self.graph_canvas.create_text(x,250,text= str(self.weather_per_hour[2][index])+'°',font = ('Arial',14))
-            self.graph_canvas.create_text(x, 270, text=self.weather_per_hour[0][index],font=('Arial',14))
-            self.graph_canvas.create_text(x, 290, text=self.weather_per_hour[1][index],font=('Arial',14))
-        self.graph_canvas.configure(scrollregion= [0,0,49*gap-gap/2,300])
+            self.graph_canvas.create_text(x, 280,text= str(self.weather_per_hour[2][index])+'°',font = ('Arial',14))
+            self.graph_canvas.create_text(x, 260, text=self.weather_per_hour[0][index],font=('Arial',14))
+            self.graph_canvas.create_text(x, 240, text=self.weather_per_hour[1][index],font=('Arial',14))
+            #그림 출력 TODO: 나중엔 바로바로 로드가 아니라 한번에 로드를 하면 좋겠다만 귀찮으니 걍 시간 더쓴다
+            filename = text=self.weather_per_hour[1][index]
 
+            if filename == '황사' or filename == '안개' or filename == '맑음' or filename == '구름조금' or filename == '구름많음' or filename == '가끔 비':
+                if self.weather_per_hour[0][index][0] == '0' or self.weather_per_hour[0][index][0] == '1' or self.weather_per_hour[0][index][0]=='2':
+                    time = int(self.weather_per_hour[0][index][:-1])
+                    if (6<=time) and (time<=20):
+                        filename += '(낮)'
+                    else:
+                        filename += '(밤)'
+                else:
+                    filename += '(밤)'
+            self.graph_canvas.create_image(x, 200, image = self.weather_icon[filename])
+
+        self.graph_canvas.configure(scrollregion= [0,0,49*gap-gap/2,300])
 
     # 노트북 탭이 바뀔 때 실행될 함수
     def my_notebook_msg(self, _):
@@ -273,6 +289,35 @@ class MainFrame(tk.Frame):
 
     def close_window(self,_):
         self.root.destroy()
+
+    def LoadWeatherIcon(self):
+        self.weather_icon = dict()
+        self.weather_icon['흐림'] = tk.PhotoImage(file= "Resource\\WeatherIcon\\흐림.png")
+        self.weather_icon['황사(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\황사(밤).png")
+        self.weather_icon['황사(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\황사(낮).png")
+        self.weather_icon['진눈깨비'] = tk.PhotoImage(file="Resource\\WeatherIcon\\진눈깨비.png")
+        self.weather_icon['우박'] = tk.PhotoImage(file="Resource\\WeatherIcon\\우박.png")
+        self.weather_icon['약한비'] = tk.PhotoImage(file="Resource\\WeatherIcon\\약한비.png")
+        self.weather_icon['약한눈'] = tk.PhotoImage(file="Resource\\WeatherIcon\\약한눈.png")
+        self.weather_icon['안개(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\안개(밤).png")
+        self.weather_icon['안개(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\안개(낮).png")
+        self.weather_icon['소낙눈'] = tk.PhotoImage(file="Resource\\WeatherIcon\\소낙눈.png")
+        self.weather_icon['소나기'] = tk.PhotoImage(file="Resource\\WeatherIcon\\소나기.png")
+        self.weather_icon['비'] = tk.PhotoImage(file="Resource\\WeatherIcon\\비.png")
+        self.weather_icon['번개'] = tk.PhotoImage(file="Resource\\WeatherIcon\\번개, 뇌우.png")
+        self.weather_icon['뇌우'] = tk.PhotoImage(file="Resource\\WeatherIcon\\번개, 뇌우.png")
+        self.weather_icon['맑음(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\맑음(밤).png")
+        self.weather_icon['맑음(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\맑음(낮).png")
+        self.weather_icon['눈'] = tk.PhotoImage(file="Resource\\WeatherIcon\\눈.png")
+        self.weather_icon['구름조금(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\구름조금(밤).png")
+        self.weather_icon['구름조금(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\구름조금(낮).png")
+        self.weather_icon['구름많음(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\구름많음(밤).png")
+        self.weather_icon['구름많음(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\구름많음(낮).png")
+        self.weather_icon['강한비'] = tk.PhotoImage(file="Resource\\WeatherIcon\\강한비.png")
+        self.weather_icon['강한눈'] = tk.PhotoImage(file="Resource\\WeatherIcon\\강한눈.png")
+        self.weather_icon['가끔 비(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\가끔 비(밤).png")
+        self.weather_icon['가끔 비(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\가끔 비(낮).png")
+
 
 class BrowserFrame(tk.Frame):  # 지도 프레임
     def __init__(self, mainframe, url):
