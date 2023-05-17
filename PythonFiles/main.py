@@ -83,7 +83,9 @@ class MainFrame(tk.Frame):
         self.tab0_time_label = tk.Label(self.tab0_frame, text="시간", font=temp_font)
         self.tab0_time_label.grid(row=3, column=1)
         tk.Button(self.tab0_frame, text="갱신", font=temp_font, command=self.PrintTab0).grid(row=3, column=2)
-
+        self.graph_canvas = tk.Canvas(self.tab0_frame,width = 650, height = 300, bg='white',bd=2)
+        self.graph_canvas.place(x=50,y=550)
+        tk.Label(self.tab0_frame, text= "시간별 그래프",font=temp_font).place(x=50,y=500)
 
         # 탭1 추가
         self.tab1_frame = tk.Frame(root)
@@ -106,6 +108,11 @@ class MainFrame(tk.Frame):
 
         tk.Button(self.tab2_frame, text="날씨", command=lambda x='날씨': self.SearchInput(x), font=temp_font).grid(row=0, column=2)
         tk.Button(self.tab2_frame,text="미세먼지",command= lambda x='미세먼지':self.SearchInput(x),font=temp_font).grid(row=0,column=3)
+
+        # 탭3 추가
+        self.tab3_frame=tk.Frame(root)
+        self.notebook.add(self.tab3_frame,text="주간 날씨 추가 예정")
+
 
         # 지도 Frame
         self.browser_frame = BrowserFrame(self, self.map_weather_url)
