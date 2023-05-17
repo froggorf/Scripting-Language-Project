@@ -28,24 +28,12 @@ class MainFrame(tk.Frame):
 
         style.element_create('Plain.Notebook.tab', "from", 'default')
         # Redefine the TNotebook Tab layout to use the new element
-        style.layout("TNotebook.Tab",
-                          [('Plain.Notebook.tab', {'children':
-                                                       [('Notebook.padding', {'side': 'top', 'children':
-                                                           [('Notebook.focus', {'side': 'top', 'children':
-                                                               [('Notebook.label', {'side': 'top', 'sticky': ''})],
-                                                                                'sticky': 'nswe'})],
-                                                                              'sticky': 'nswe'})],
-                                                   'sticky': 'nswe'})])
+        style.layout("TNotebook.Tab",[('Plain.Notebook.tab',{'children': [('Notebook.padding',{'side': 'top','children':[('Notebook.focus',{'side': 'top','children':[('Notebook.label',{'side': 'top', 'sticky': ''})],'sticky': 'nswe'})],'sticky': 'nswe'})],'sticky': 'nswe'})])
         style.configure("TNotebook", background=BACKGROUNDCOLOR, borderwidth=0)
         style.configure("TNotebook.Tab",
                         background = BACKGROUNDCOLOR,
-                        foreground='black',
-                        lightcolor='black',
-                        borderwidth=1,
-                        font = temp_font,
-                        bordermode="inside",
-                        padding = [10,5]
-                        )
+                        foreground='black',lightcolor='black',borderwidth=1,font = temp_font,bordermode="inside",padding = [10,5])
+        #style.layout("TNotebook.Tab",{'map':{"background":[("selected","black")]}})
         style.configure("TFrame", background=BACKGROUNDCOLOR, foreground=BACKGROUNDCOLOR, borderwidth=0)
 
 
@@ -101,22 +89,26 @@ class MainFrame(tk.Frame):
         self.tab1_frame = tk.Frame(root)
         self.notebook.add(self.tab1_frame, text = "지도")
         # tk.Label(self.tab1_frame, text="지도").pack()
+        self.map_weather_url = "https://weather.naver.com/map/02390118"
+        self.map_dust_url = "https://weather.naver.com/air/02390118"
+        tk.Button(self.tab1_frame,text="지도 초기화(날씨)",command=lambda: self.ResetMapBrowser(self.map_weather_url),font=temp_font,background='#888888').place(x=50,y=10)
+        tk.Button(self.tab1_frame, text="지도 초기화(미세먼지)", command=lambda: self.ResetMapBrowser(self.map_dust_url),font=temp_font, background='#888888').place(x=300, y=10)
 
         # 탭2 추가
         self.tab2_frame = tk.Frame(root)
         self.notebook.add(self.tab2_frame, text = "검색")
-        tk.Label(self.tab2_frame, text="날씨를 검색할 지역 이름을 적어주세요 ex) 정왕 엔터도됨").grid(row=0, column=0)
+        tk.Label(self.tab2_frame, text="날씨를 검색할 지역 이름을 적어주세요 ex) 정왕").grid(row=0, column=0)
 
         self.search_entrybox = tk.Entry(self.tab2_frame, font=temp_font)
         self.search_entrybox.bind("<Return>", self.SearchInput)
         self.search_entrybox.bind("<Button-1>", self.SearchLButton)
         self.search_entrybox.grid(row=0, column=1)
 
-        tk.Button(self.tab2_frame, text="검색", command=lambda x=None: self.SearchInput(x), font=temp_font).grid(
-            row=0, column=2)
+        tk.Button(self.tab2_frame, text="날씨", command=lambda x='날씨': self.SearchInput(x), font=temp_font).grid(row=0, column=2)
+        tk.Button(self.tab2_frame,text="미세먼지",command= lambda x='미세먼지':self.SearchInput(x),font=temp_font).grid(row=0,column=3)
 
         # 지도 Frame
-        self.browser_frame = BrowserFrame(self, "https://weather.naver.com/map/02390118")
+        self.browser_frame = BrowserFrame(self, self.map_weather_url)
         self.browser_frame.grid(row=0, column=0,
                                 sticky=(tk.N + tk.S + tk.E + tk.W))
         # 검색 Frame
@@ -161,7 +153,7 @@ class MainFrame(tk.Frame):
                                    sticky=(tk.N + tk.S + tk.E + tk.W))
             tk.Grid.rowconfigure(self, 0, weight=1)
             tk.Grid.columnconfigure(self, 0, weight=1)
-            self.grid(row=3, column=0, padx=20, ipady =430,pady = 20,sticky=tk.N+tk.E+tk.W+tk.S)
+            self.grid(row=3, column=0, padx=50, ipady =400,pady = 55,sticky=tk.N+tk.E+tk.W+tk.S)
             self.lift()
             self.show_browser_frame = True
 
@@ -170,15 +162,14 @@ class MainFrame(tk.Frame):
 
     # 노트북의 탭 이미지 활성화/비활성화
     def SetAllImageToInactive(self, index):
-        # self.notebook.configure(image = self.note_tab1_inactive_image)
-        #self.notebook.tab(self.tab0_frame, image=self.note_tab0_inactive_image)
-        #self.notebook.tab(self.tab1_frame, image=self.note_tab1_inactive_image)
-        #self.notebook.tab(self.tab2_frame, image=self.note_tab2_inactive_image)
+
+        self.notebook.tab(self.tab0_frame, background = BACKGROUNDCOLOR)
+        self.notebook.tab(self.tab1_frame, background = BACKGROUNDCOLOR)
+        self.notebook.tab(self.tab2_frame, background = BACKGROUNDCOLOR)
 
         # TODO: 나중에 배열로 리팩토링 진행해보기
         if index == 0:
-            pass
-            #self.notebook.tab(self.tab0_frame, image=self.note_tab0_active_image)
+            self.notebook.tab(self.tab0_frame, image=self.note_tab0_active_image)
         elif index == 1:
             self.notebook.tab(self.tab1_frame, image=self.note_tab1_active_image)
         elif index == 2:
@@ -194,19 +185,25 @@ class MainFrame(tk.Frame):
         self.note_tab2_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab2_Inactive.png')
         self.main_image = tk.PhotoImage(file='Resource\\MainImage.png')
 
-    def SearchInput(self, _):
+    def ResetMapBrowser(self,url):
+        self.browser_frame.LoadUrl(url)
+    def SearchInput(self, button):
+
         # 브라우저가 켜져있다면
         if self.show_search_frame:
             # url만 바꾸기
             location = self.search_entrybox.get()
             self.search_entrybox.delete(0, len(location))
-            self.search_frame.LoadUrl(GetNaverWeatherSearch(location))
+            if button =='미세먼지':
+                self.search_frame.LoadUrl(GetNaverWeatherSearch(location,button))
+            else:
+                self.search_frame.LoadUrl(GetNaverWeatherSearch(location,None))
 
         else:
             self.search_frame.grid(row=0, column=0,
                                    sticky=(tk.N + tk.S + tk.E + tk.W))
 
-            self.grid(row=3, column=0, ipadx=500, ipady=400, sticky=tk.NW)
+            self.grid(row=3, column=0, ipadx=350,padx = 50, ipady=380,pady = 50, sticky=tk.NW)
             self.lift()
             tk.Grid.rowconfigure(self, 0, weight=1)
             tk.Grid.columnconfigure(self, 0, weight=1)
@@ -215,9 +212,16 @@ class MainFrame(tk.Frame):
             self.search_entrybox.delete(0, len(location))
 
             if self.search_frame.GetBrowser():
-                self.search_frame.LoadUrl(GetNaverWeatherSearch(location))
+                if button == '미세먼지':
+                    self.search_frame.LoadUrl(GetNaverWeatherSearch(location, button))
+                else:
+                    self.search_frame.LoadUrl(GetNaverWeatherSearch(location, 'None'))
             else:
-                self.search_frame.SetInitUrl(GetNaverWeatherSearch((location)))
+                if button == '미세먼지':
+                    self.search_frame.SetInitUrl(GetNaverWeatherSearch(location,button))
+                else:
+                    self.search_frame.SetInitUrl(GetNaverWeatherSearch(location,'None'))
+
 
     def SearchLButton(self, _):
         self.search_entrybox.focus_force()
@@ -268,7 +272,10 @@ class BrowserFrame(tk.Frame):  # 지도 프레임
         self.url = url
 
 
-def GetNaverWeatherSearch(location):
+def GetNaverWeatherSearch(location,button):
+    print(button)
+    if button == '미세먼지':
+        return "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + location + "+미세먼지&oquery=" + location + "&tqi=ibu4pdp0J1ZssTMblOwssssssio-160161"
     return "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + location + "+날씨&oquery=" + location + "&tqi=ibu4pdp0J1ZssTMblOwssssssio-160161"
 
 
