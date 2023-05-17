@@ -71,21 +71,29 @@ class MainFrame(tk.Frame):
         # 탭0 추가
         self.tab0_frame = tk.Frame(root)
         self.notebook.add(self.tab0_frame, text = "지역 날씨")
-        tk.Label(self.tab0_frame, text="설정 지역 날씨", font=temp_font).grid(row=0, column=0)
-        tk.Label(self.tab0_frame, text="현재 지역: ", font=temp_font).grid(row=1, column=0)
+        tk.Label(self.tab0_frame, text="설정 지역 날씨", font=temp_font).place(x=0, y=0)
+        tk.Label(self.tab0_frame, text="현재 지역: ", font=temp_font).place(x=250, y=0)
         self.tab0_location_label = tk.Label(self.tab0_frame, text="현재 지역", font=temp_font)
-        self.tab0_location_label.grid(row=1, column=1)
+        self.tab0_location_label.place(x=500,y=0)
         self.tab0_temperature_label = tk.Label(self.tab0_frame, text="온도", font=temp_font)
-        self.tab0_temperature_label.grid(row=2, column=0)
+        self.tab0_temperature_label.place(x=0,y=50)
         self.tab0_weather_state_label = tk.Label(self.tab0_frame, text="상태", font=temp_font)
-        self.tab0_weather_state_label.grid(row=2, column=1)
-        tk.Label(self.tab0_frame, text="갱신 시간", font=temp_font).grid(row=3, column=0)
+        self.tab0_weather_state_label.place(x=250,y=50)
+        tk.Label(self.tab0_frame, text="갱신 시간", font=temp_font).place(x=0,y=100)
         self.tab0_time_label = tk.Label(self.tab0_frame, text="시간", font=temp_font)
-        self.tab0_time_label.grid(row=3, column=1)
-        tk.Button(self.tab0_frame, text="갱신", font=temp_font, command=self.PrintTab0).grid(row=3, column=2)
+        self.tab0_time_label.place(x=250,y=100)
+        tk.Button(self.tab0_frame, text="갱신", font=temp_font, command=self.PrintTab0).place(x=550,y=100)
         self.graph_canvas = tk.Canvas(self.tab0_frame,width = 650, height = 300, bg='white',bd=2)
-        self.graph_canvas.place(x=50,y=550)
-        tk.Label(self.tab0_frame, text= "시간별 그래프",font=temp_font).place(x=50,y=500)
+        self.graph_canvas.place(x=50,y=520)
+        self.canvas_scrollX = tk.Scrollbar(self.tab0_frame)
+        self.canvas_scrollX.config(orient = tk.HORIZONTAL,command=self.graph_canvas.xview)
+        self.canvas_scrollX.place(x=50,y=820,width = 650)
+
+        self.graph_canvas.configure(xscrollcommand=self.canvas_scrollX.set)
+        self.graph_canvas.config(scrollregion=self.graph_canvas.bbox("all"))
+
+
+        tk.Label(self.tab0_frame, text= "시간별 그래프 // 미세먼지 추가 예정",font=temp_font).place(x=50,y=470)
 
         # 탭1 추가
         self.tab1_frame = tk.Frame(root)
@@ -106,7 +114,7 @@ class MainFrame(tk.Frame):
         self.search_entrybox.bind("<Button-1>", self.SearchLButton)
         self.search_entrybox.grid(row=0, column=1)
 
-        tk.Button(self.tab2_frame, text="날씨", command=lambda x='날씨': self.SearchInput(x), font=temp_font).grid(row=0, column=2)
+        tk.Button(self.tab2_frame, text="날씨", command = lambda x= '날씨' : self.SearchInput(x), font=temp_font).grid(row=0, column=2)
         tk.Button(self.tab2_frame,text="미세먼지",command= lambda x='미세먼지':self.SearchInput(x),font=temp_font).grid(row=0,column=3)
 
         # 탭3 추가
@@ -125,11 +133,41 @@ class MainFrame(tk.Frame):
 
     def PrintTab0(self):
         weathers = naverweather.GetWeatherInformation()
+        self.weather_per_hour = weathers[3]
+        #TODO: 미세먼지 관련 그래프로 추가 예정 self.dust_per_hour = weathers[4]
         self.tab0_location_label.configure(text=weathers[0])
         self.tab0_temperature_label.configure(text=weathers[1])
         self.tab0_weather_state_label.configure(text=weathers[2])
         self.tab0_time_label.configure(text=GetTimeText())
-        pass
+        #TODO: 나중엔 미세먼지랑 날씨 라디오 버튼이든 버튼으로든 받아서 그거로 나눠서 그려지게 할 예정
+        self.DrawGraph()
+
+    def DrawGraph(self):
+        #0 ~ 200 을 - 온도맥스+10 ~ 온도min-10
+        #200이라는 숫자를 diffdegree로 나누면 1' 당의 차이가 나옴
+        #
+        maxdegree = max(self.weather_per_hour[2]) + 10
+        mindegree = min(self.weather_per_hour[2]) - 10
+        diffdegree = abs(maxdegree-mindegree)
+        gap = 100
+        prev_x = 0
+        prev_y = 0
+        for index, data in enumerate(self.weather_per_hour[2]):
+            x = index * gap + gap/2
+            percent = (data - mindegree) / (maxdegree-mindegree)
+            y = 200- percent*200
+            if prev_x == 0 :
+                prev_x = x
+                prev_y = y
+            self.graph_canvas.create_oval(x-3,y-3,x+3,y+3)
+            self.graph_canvas.create_line(prev_x,prev_y,x,y)
+            prev_x = x
+            prev_y = y
+            self.graph_canvas.create_text(x,250,text= str(self.weather_per_hour[2][index])+'°',font = ('Arial',14))
+            self.graph_canvas.create_text(x, 270, text=self.weather_per_hour[0][index],font=('Arial',14))
+            self.graph_canvas.create_text(x, 290, text=self.weather_per_hour[1][index],font=('Arial',14))
+        self.graph_canvas.configure(scrollregion= [0,0,49*gap-gap/2,300])
+
 
     # 노트북 탭이 바뀔 때 실행될 함수
     def my_notebook_msg(self, _):
