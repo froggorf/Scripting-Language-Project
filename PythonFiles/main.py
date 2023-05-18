@@ -121,7 +121,10 @@ class MainFrame(tk.Frame):
         # 탭3 추가
         self.tab3_frame=tk.Frame(root)
         self.notebook.add(self.tab3_frame,text="주간 날씨 추가 예정")
-
+        self.week_forecast_frame = list()
+        for i in range(10):#text= 'asdaksfdl;sdkafgkls;ektl;se',font = temp_font,borderwidth=1, relief="solid"
+            self.week_forecast_frame.append(tk.Frame(self.tab3_frame,borderwidth=1,relief="solid",width = 600,height=80))
+            self.week_forecast_frame[i].place(x=80,y=50+80*i)
 
         # 지도 Frame
         self.browser_frame = BrowserFrame(self, self.map_weather_url)
@@ -158,7 +161,7 @@ class MainFrame(tk.Frame):
             x = index * gap + gap/2
             percent = (data - mindegree) / (maxdegree-mindegree)
             y = 150 - percent*150
-            print(y)
+
             if prev_x == 0 :
                 prev_x = x
                 prev_y = y
@@ -185,6 +188,37 @@ class MainFrame(tk.Frame):
 
         self.graph_canvas.configure(scrollregion= [0,0,49*gap-gap/2,300])
 
+    def PrintWeekForecast(self):
+        week_information = naverweather.GetWeekWeatherForecast()
+        #초기화
+        for i in range(10):
+            for widget in self.week_forecast_frame[i].winfo_children():
+                widget.destroy()
+        date = week_information[0]
+        weather_state_am = week_information[1]
+        weather_state_pm = week_information[2]
+        rain_am = week_information[3]
+        rain_pm = week_information[4]
+        max_temp  = week_information[5]
+        min_temp = week_information[6]
+
+        #정보 삽입
+        for i in range(10):
+            tk.Label(self.week_forecast_frame[i], text = date[i][0]).place(x=0,y=30)
+            tk.Label(self.week_forecast_frame[i], text=date[i][1]).place(x=50, y=30)
+            tk.Label(self.week_forecast_frame[i], text = "오전").place(x=100,y=30)
+            tk.Label(self.week_forecast_frame[i], text="강수: "+rain_am[i]).place(x=130,y=30)
+            tk.Label(self.week_forecast_frame[i], text=weather_state_am[i]).place(x=200,y=30)
+
+            tk.Label(self.week_forecast_frame[i], text="오후").place(x=300, y=30)
+            tk.Label(self.week_forecast_frame[i], text="강수: " + rain_pm[i]).place(x=330, y=30)
+            tk.Label(self.week_forecast_frame[i], text=weather_state_pm[i]).place(x=400, y=30)
+
+            tk.Label(self.week_forecast_frame[i], text= max_temp[i],fg='red').place(x=500,y=30)
+            tk.Label(self.week_forecast_frame[i], text = min_temp[i],fg='blue').place(x=550,y=30)
+
+
+        pass
     # 노트북 탭이 바뀔 때 실행될 함수
     def my_notebook_msg(self, _):
         if self.show_browser_frame:  # 지도가 보이고 있을 때
@@ -220,6 +254,9 @@ class MainFrame(tk.Frame):
 
         elif select_notetab_index == 2:
             pass
+
+        elif select_notetab_index == 3:
+            self.PrintWeekForecast()
 
     # 노트북의 탭 이미지 활성화/비활성화
     def SetAllImageToInactive(self, index):
@@ -363,7 +400,7 @@ class BrowserFrame(tk.Frame):  # 지도 프레임
 
 
 def GetNaverWeatherSearch(location,button):
-    print(button)
+
     if button == '미세먼지':
         return "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + location + "+미세먼지&oquery=" + location + "&tqi=ibu4pdp0J1ZssTMblOwssssssio-160161"
     return "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + location + "+날씨&oquery=" + location + "&tqi=ibu4pdp0J1ZssTMblOwssssssio-160161"
