@@ -98,29 +98,31 @@ class MainFrame(tk.Frame):
 
         # 탭1 추가
         self.tab1_frame = tk.Frame(root)
-        self.notebook.add(self.tab1_frame, text = "지도")
+        self.notebook.add(self.tab1_frame, text = "검색")
         # tk.Label(self.tab1_frame, text="지도").pack()
         self.map_weather_url = "https://weather.naver.com/map/02390118"
         self.map_dust_url = "https://weather.naver.com/air/02390118"
-        tk.Button(self.tab1_frame,text="지도 초기화(날씨)",command=lambda: self.ResetMapBrowser(self.map_weather_url),font=temp_font,background='#888888').place(x=50,y=10)
-        tk.Button(self.tab1_frame, text="지도 초기화(미세먼지)", command=lambda: self.ResetMapBrowser(self.map_dust_url),font=temp_font, background='#888888').place(x=300, y=10)
+        tk.Button(self.tab1_frame,text="지도 초기화(날씨)",command=lambda: self.ResetMapBrowser(self.map_weather_url),font=temp_font,background='#888888').place(x=50,y=80)
+        tk.Button(self.tab1_frame, text="지도 초기화(미세먼지)", command=lambda: self.ResetMapBrowser(self.map_dust_url),font=temp_font, background='#888888').place(x=300, y=80)
 
-        # 탭2 추가
-        self.tab2_frame = tk.Frame(root)
-        self.notebook.add(self.tab2_frame, text = "검색")
-        tk.Label(self.tab2_frame, text="날씨를 검색할 지역 이름을 적어주세요 ex) 정왕").grid(row=0, column=0)
+        tk.Label(self.tab1_frame, text="날씨를 검색할 지역 이름을 적어주세요 ex) 정왕").grid(row=0, column=0)
 
-        self.search_entrybox = tk.Entry(self.tab2_frame, font=temp_font)
+        self.search_entrybox = tk.Entry(self.tab1_frame, font=temp_font)
         self.search_entrybox.bind("<Return>", self.SearchInput)
         self.search_entrybox.bind("<Button-1>", self.SearchLButton)
         self.search_entrybox.grid(row=0, column=1)
 
-        tk.Button(self.tab2_frame, text="날씨", command = lambda x= '날씨' : self.SearchInput(x), font=temp_font).grid(row=0, column=2)
-        tk.Button(self.tab2_frame,text="미세먼지",command= lambda x='미세먼지':self.SearchInput(x),font=temp_font).grid(row=0,column=3)
+        tk.Button(self.tab1_frame, text="날씨", command = lambda x= '날씨' : self.SearchInput(x), font=temp_font).grid(row=0, column=2)
+        tk.Button(self.tab1_frame,text="미세먼지",command= lambda x='미세먼지':self.SearchInput(x),font=temp_font).grid(row=0,column=3)
+
+
+        # 탭2 추가
+        #self.tab2_frame = tk.Frame(root)
+        #self.notebook.add(self.tab2_frame, text = "검색")
 
         # 탭3 추가
         self.tab3_frame=tk.Frame(root)
-        self.notebook.add(self.tab3_frame,text="주간 날씨 추가 예정")
+        self.notebook.add(self.tab3_frame,text="주간 날씨")
         self.week_forecast_frame = list()
         for i in range(10):#text= 'asdaksfdl;sdkafgkls;ektl;se',font = temp_font,borderwidth=1, relief="solid"
             self.week_forecast_frame.append(tk.Frame(self.tab3_frame,borderwidth=1,relief="solid",width = 600,height=80))
@@ -131,7 +133,7 @@ class MainFrame(tk.Frame):
         self.browser_frame.grid(row=0, column=0,
                                 sticky=(tk.N + tk.S + tk.E + tk.W))
         # 검색 Frame
-        self.search_frame = BrowserFrame(self, "https://www.google.com")
+        #self.search_frame = BrowserFrame(self, "https://www.google.com")
 
         tk.Label(root, text="기관지 지킴이",font = temp_font,background=BACKGROUNDCOLOR).place(x=600,y=25)
 
@@ -175,7 +177,9 @@ class MainFrame(tk.Frame):
             #그림 출력 TODO: 나중엔 바로바로 로드가 아니라 한번에 로드를 하면 좋겠다만 귀찮으니 걍 시간 더쓴다
             filename = text=self.weather_per_hour[1][index]
 
-            if filename == '황사' or filename == '안개' or filename == '맑음' or filename == '구름조금' or filename == '구름많음' or filename == '가끔 비':
+            if filename == '황사' or filename == '안개' or filename == '맑음' or filename == '구름조금' or filename == '구름많음' or filename == '가끔 비'\
+                    or filename == '비 후 갬' or filename == '눈 후 갬' or filename == '뇌우 후 갬' or filename == '가끔 비, 눈' or filename == '가끔 눈'\
+                    or filename == '흐려져 비' or filename == '흐림 후 갬' or filename == '흐려져 눈':
                 if self.weather_per_hour[0][index][0] == '0' or self.weather_per_hour[0][index][0] == '1' or self.weather_per_hour[0][index][0]=='2':
                     time = int(self.weather_per_hour[0][index][:-1])
                     if (6<=time) and (time<=20):
@@ -184,7 +188,10 @@ class MainFrame(tk.Frame):
                         filename += '(밤)'
                 else:
                     filename += '(밤)'
-            self.graph_canvas.create_image(x, 200, image = self.weather_icon[filename])
+            if filename in self.weather_icon:
+                self.graph_canvas.create_image(x, 200, image = self.weather_icon[filename])
+            else:
+                self.graph_canvas.create_text(x,200,text = "에러!")
 
         self.graph_canvas.configure(scrollregion= [0,0,49*gap-gap/2,300])
 
@@ -208,11 +215,29 @@ class MainFrame(tk.Frame):
             tk.Label(self.week_forecast_frame[i], text=date[i][1]).place(x=50, y=30)
             tk.Label(self.week_forecast_frame[i], text = "오전").place(x=100,y=30)
             tk.Label(self.week_forecast_frame[i], text="강수: "+rain_am[i]).place(x=130,y=30)
-            tk.Label(self.week_forecast_frame[i], text=weather_state_am[i]).place(x=200,y=30)
+            filename_am = weather_state_am[i]
+            if filename_am == '황사' or filename_am == '안개' or filename_am == '맑음' or filename_am == '구름조금' or filename_am == '구름많음' or filename_am == '가끔 비' \
+                    or filename_am == '비 후 갬' or filename_am == '눈 후 갬' or filename_am == '뇌우 후 갬' or filename_am == '가끔 비, 눈' or filename_am == '가끔 눈' \
+                    or filename_am == '흐려져 비' or filename_am == '흐림 후 갬' or filename_am == '흐려져 눈':
+                filename_am+="(낮)"
+            if filename_am in self.weather_icon:
+                tk.Label(self.week_forecast_frame[i],image = self.weather_icon[filename_am]).place(x=200,y=5)
+            else:
+                tk.Label(self.week_forecast_frame[i],text="에러!").place(x=200,y=27)
+            tk.Label(self.week_forecast_frame[i], text=weather_state_am[i]).place(x=200,y=55)
 
             tk.Label(self.week_forecast_frame[i], text="오후").place(x=300, y=30)
             tk.Label(self.week_forecast_frame[i], text="강수: " + rain_pm[i]).place(x=330, y=30)
-            tk.Label(self.week_forecast_frame[i], text=weather_state_pm[i]).place(x=400, y=30)
+            filename_pm = weather_state_pm[i]
+            if filename_pm == '황사' or filename_pm == '안개' or filename_pm == '맑음' or filename_pm == '구름조금' or filename_pm == '구름많음' or filename_pm == '가끔 비' \
+                    or filename_pm == '비 후 갬' or filename_pm == '눈 후 갬' or filename_pm == '뇌우 후 갬' or filename_pm == '가끔 비, 눈' or filename_pm == '가끔 눈' \
+                    or filename_pm == '흐려져 비' or filename_pm == '흐림 후 갬' or filename_pm == '흐려져 눈':
+                filename_pm += "(밤)"
+            if filename_pm in self.weather_icon:
+                tk.Label(self.week_forecast_frame[i],image = self.weather_icon[filename_pm]).place(x=400,y=5)
+            else:
+                tk.Label(self.week_forecast_frame[i],text="에러!").place(x=400,y=27)
+            tk.Label(self.week_forecast_frame[i], text=weather_state_pm[i]).place(x=400, y=55)
 
             tk.Label(self.week_forecast_frame[i], text= max_temp[i],fg='red').place(x=500,y=30)
             tk.Label(self.week_forecast_frame[i], text = min_temp[i],fg='blue').place(x=550,y=30)
@@ -224,11 +249,6 @@ class MainFrame(tk.Frame):
         if self.show_browser_frame:  # 지도가 보이고 있을 때
             self.show_browser_frame = False  # 지도가 안보이도록 설정
             self.browser_frame.grid_remove()
-            self.grid_remove()
-
-        if self.show_search_frame:
-            self.show_search_frame = False
-            self.search_frame.grid_remove()
             self.grid_remove()
         # 현재 선택된 탭 인덱스 받아오기
         select_notetab_index = self.notebook.index("current")
@@ -243,20 +263,20 @@ class MainFrame(tk.Frame):
         elif select_notetab_index == 1:
             # 1번탭에 해당하는 함수를 진행
             # 지도를 보이도록 추가
-
             self.browser_frame.grid(row=0, column=0,
                                    sticky=(tk.N + tk.S + tk.E + tk.W))
             tk.Grid.rowconfigure(self, 0, weight=1)
             tk.Grid.columnconfigure(self, 0, weight=1)
-            self.grid(row=3, column=0, padx=50, ipady =400,pady = 55,sticky=tk.N+tk.E+tk.W+tk.S)
+            self.grid(row=3, column=0, padx=50, ipady =350,pady = 55,sticky=tk.N+tk.E+tk.W+tk.S)
             self.lift()
             self.show_browser_frame = True
 
         elif select_notetab_index == 2:
+            self.PrintWeekForecast()
             pass
 
         elif select_notetab_index == 3:
-            self.PrintWeekForecast()
+            pass
 
     # 노트북의 탭 이미지 활성화/비활성화
     def SetAllImageToInactive(self, index):
@@ -286,39 +306,13 @@ class MainFrame(tk.Frame):
     def ResetMapBrowser(self,url):
         self.browser_frame.LoadUrl(url)
     def SearchInput(self, button):
-
-        # 브라우저가 켜져있다면
-        if self.show_search_frame:
-            # url만 바꾸기
-            location = self.search_entrybox.get()
-            self.search_entrybox.delete(0, len(location))
-            if button =='미세먼지':
-                self.search_frame.LoadUrl(GetNaverWeatherSearch(location,button))
-            else:
-                self.search_frame.LoadUrl(GetNaverWeatherSearch(location,None))
-
+        location = self.search_entrybox.get()
+        self.search_entrybox.delete(0, len(location))
+        if button =='미세먼지':
+            self.browser_frame.LoadUrl(GetNaverWeatherSearch(location,button))
         else:
-            self.search_frame.grid(row=0, column=0,
-                                   sticky=(tk.N + tk.S + tk.E + tk.W))
+            self.browser_frame.LoadUrl(GetNaverWeatherSearch(location,None))
 
-            self.grid(row=3, column=0, ipadx=350,padx = 50, ipady=380,pady = 50, sticky=tk.NW)
-            self.lift()
-            tk.Grid.rowconfigure(self, 0, weight=1)
-            tk.Grid.columnconfigure(self, 0, weight=1)
-            self.show_search_frame = True
-            location = self.search_entrybox.get()
-            self.search_entrybox.delete(0, len(location))
-
-            if self.search_frame.GetBrowser():
-                if button == '미세먼지':
-                    self.search_frame.LoadUrl(GetNaverWeatherSearch(location, button))
-                else:
-                    self.search_frame.LoadUrl(GetNaverWeatherSearch(location, 'None'))
-            else:
-                if button == '미세먼지':
-                    self.search_frame.SetInitUrl(GetNaverWeatherSearch(location,button))
-                else:
-                    self.search_frame.SetInitUrl(GetNaverWeatherSearch(location,'None'))
 
 
     def SearchLButton(self, _):
@@ -338,14 +332,22 @@ class MainFrame(tk.Frame):
         self.weather_icon['약한눈'] = tk.PhotoImage(file="Resource\\WeatherIcon\\약한눈.png")
         self.weather_icon['안개(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\안개(밤).png")
         self.weather_icon['안개(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\안개(낮).png")
+        self.weather_icon['비 후 갬(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\비 후 갬(밤).png")
+        self.weather_icon['비 후 갬(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\비 후 갬(낮).png")
+        self.weather_icon['비 또는 눈'] = tk.PhotoImage(file="Resource\\WeatherIcon\\비 또는 눈.png")
         self.weather_icon['소낙눈'] = tk.PhotoImage(file="Resource\\WeatherIcon\\소낙눈.png")
         self.weather_icon['소나기'] = tk.PhotoImage(file="Resource\\WeatherIcon\\소나기.png")
         self.weather_icon['비'] = tk.PhotoImage(file="Resource\\WeatherIcon\\비.png")
         self.weather_icon['번개'] = tk.PhotoImage(file="Resource\\WeatherIcon\\번개, 뇌우.png")
+        self.weather_icon['번개, 뇌우'] = tk.PhotoImage(file="Resource\\WeatherIcon\\번개, 뇌우.png")
         self.weather_icon['뇌우'] = tk.PhotoImage(file="Resource\\WeatherIcon\\번개, 뇌우.png")
         self.weather_icon['맑음(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\맑음(밤).png")
         self.weather_icon['맑음(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\맑음(낮).png")
         self.weather_icon['눈'] = tk.PhotoImage(file="Resource\\WeatherIcon\\눈.png")
+        self.weather_icon['눈 후 갬(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\눈 후 갬(밤).png")
+        self.weather_icon['눈 후 갬(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\눈 후 갬(낮).png")
+        self.weather_icon['뇌우 후 갬(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\뇌우 후 갬(낮).png")
+        self.weather_icon['뇌우 후 갬(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\뇌우 후 갬(밤).png")
         self.weather_icon['구름조금(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\구름조금(밤).png")
         self.weather_icon['구름조금(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\구름조금(낮).png")
         self.weather_icon['구름많음(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\구름많음(밤).png")
@@ -354,6 +356,16 @@ class MainFrame(tk.Frame):
         self.weather_icon['강한눈'] = tk.PhotoImage(file="Resource\\WeatherIcon\\강한눈.png")
         self.weather_icon['가끔 비(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\가끔 비(밤).png")
         self.weather_icon['가끔 비(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\가끔 비(낮).png")
+        self.weather_icon['가끔 눈(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\가끔 눈(밤).png")
+        self.weather_icon['가끔 눈(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\가끔 눈(낮).png")
+        self.weather_icon['가끔 비, 눈(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\가끔 비, 눈(밤).png")
+        self.weather_icon['가끔 비, 눈(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\가끔 비, 눈(낮).png")
+        self.weather_icon['흐려져 비(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐려져 비(밤).png")
+        self.weather_icon['흐려져 비(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐려져 비(낮).png")
+        self.weather_icon['흐려져 눈(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐려져 눈(밤).png")
+        self.weather_icon['흐려져 눈(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐려져 눈(낮).png")
+        self.weather_icon['흐림 후 갬(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐림 후 갬(낮).png")
+        self.weather_icon['흐림 후 갬(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐림 후 갬(밤).png")
 
 
 class BrowserFrame(tk.Frame):  # 지도 프레임
