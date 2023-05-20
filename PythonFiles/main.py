@@ -32,7 +32,7 @@ class MainFrame(tk.Frame):
         style.configure("TNotebook", background=BACKGROUNDCOLOR, borderwidth=0)
         style.configure("TNotebook.Tab",
                         background = BACKGROUNDCOLOR,
-                        foreground='black',lightcolor='black',borderwidth=1,font = temp_font,bordermode="inside",padding = [10,5])
+                        foreground='black',lightcolor='black',borderwidth=0,padding = [-3,-5])
         #style.layout("TNotebook.Tab",{'map':{"background":[("selected","black")]}})
         style.configure("TFrame", background=BACKGROUNDCOLOR, foreground=BACKGROUNDCOLOR, borderwidth=0)
 
@@ -71,7 +71,7 @@ class MainFrame(tk.Frame):
 
         # 탭0 추가
         self.tab0_frame = tk.Frame(root)
-        self.notebook.add(self.tab0_frame, text = "지역 날씨")
+        self.notebook.add(self.tab0_frame, image = self.note_tab2_inactive_image)
         tk.Label(self.tab0_frame, text="설정 지역 날씨", font=temp_font).place(x=0, y=0)
         tk.Label(self.tab0_frame, text="현재 지역: ", font=temp_font).place(x=250, y=0)
         self.tab0_location_label = tk.Label(self.tab0_frame, text="현재 지역", font=temp_font)
@@ -121,11 +121,11 @@ class MainFrame(tk.Frame):
         #self.notebook.add(self.tab2_frame, text = "검색")
 
         # 탭3 추가
-        self.tab3_frame=tk.Frame(root)
-        self.notebook.add(self.tab3_frame,text="주간 날씨")
+        self.tab2_frame=tk.Frame(root)
+        self.notebook.add(self.tab2_frame,text="주간 날씨")
         self.week_forecast_frame = list()
         for i in range(10):#text= 'asdaksfdl;sdkafgkls;ektl;se',font = temp_font,borderwidth=1, relief="solid"
-            self.week_forecast_frame.append(tk.Frame(self.tab3_frame,borderwidth=1,relief="solid",width = 600,height=80))
+            self.week_forecast_frame.append(tk.Frame(self.tab2_frame,borderwidth=1,relief="solid",width = 600,height=80))
             self.week_forecast_frame[i].place(x=80,y=50+80*i)
 
         # 지도 Frame
@@ -136,6 +136,8 @@ class MainFrame(tk.Frame):
         #self.search_frame = BrowserFrame(self, "https://www.google.com")
 
         tk.Label(root, text="기관지 지킴이",font = temp_font,background=BACKGROUNDCOLOR).place(x=600,y=25)
+
+        print(self.notebook.tab(0)['text'])
 
     def PrintTab0(self):
         weathers = naverweather.GetWeatherInformation()
@@ -255,7 +257,7 @@ class MainFrame(tk.Frame):
         select_notetab_index = self.notebook.index("current")
 
         # 현재 선택된 탭은 Active로, 나머지는 Inactive로 이미지 수정
-        #self.SetAllImageToInactive(select_notetab_index)
+        self.SetAllImageToInactive(select_notetab_index)
 
         if select_notetab_index == 0:
             # 0번탭에 해당하는 함수를 진행
@@ -282,9 +284,12 @@ class MainFrame(tk.Frame):
     # 노트북의 탭 이미지 활성화/비활성화
     def SetAllImageToInactive(self, index):
 
-        self.notebook.tab(self.tab0_frame, background = BACKGROUNDCOLOR)
-        self.notebook.tab(self.tab1_frame, background = BACKGROUNDCOLOR)
-        self.notebook.tab(self.tab2_frame, background = BACKGROUNDCOLOR)
+        #self.notebook.tab(self.tab0_frame, background = BACKGROUNDCOLOR)
+        #self.notebook.tab(self.tab1_frame, background = BACKGROUNDCOLOR)
+        #self.notebook.tab(self.tab2_frame, background = BACKGROUNDCOLOR)
+        self.notebook.tab(self.tab0_frame, image = self.note_tab0_inactive_image)
+        self.notebook.tab(self.tab1_frame, image = self.note_tab1_inactive_image)
+        self.notebook.tab(self.tab2_frame, image = self.note_tab2_inactive_image)
 
         # TODO: 나중에 배열로 리팩토링 진행해보기
         if index == 0:
