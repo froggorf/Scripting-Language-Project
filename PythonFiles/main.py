@@ -224,6 +224,7 @@ class MainFrame(tk.Frame):
                 tk.Label(self.week_forecast_frame[i],image = self.weather_icon[filename_am]).place(x=200,y=5)
             else:
                 tk.Label(self.week_forecast_frame[i],text="에러!").place(x=200,y=27)
+                print(filename_am)
             tk.Label(self.week_forecast_frame[i], text=weather_state_am[i]).place(x=200,y=55)
 
             tk.Label(self.week_forecast_frame[i], text="오후").place(x=300, y=30)
@@ -366,6 +367,7 @@ class MainFrame(tk.Frame):
         self.weather_icon['흐려져 눈(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐려져 눈(낮).png")
         self.weather_icon['흐림 후 갬(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐림 후 갬(낮).png")
         self.weather_icon['흐림 후 갬(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐림 후 갬(밤).png")
+        self.weather_icon['구름많고 한때 비 곳'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐려져 비(낮).png")   #? 왜 이런 이름이 되게 나오는걸까
 
 
 class BrowserFrame(tk.Frame):  # 지도 프레임
