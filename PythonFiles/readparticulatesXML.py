@@ -1,9 +1,4 @@
-# 미세먼지 정보읽기
-# 지역미세먼지정보적기
 
-# 텔레그램
-# 지역설정하기
-# 알림설정
 
 # 인증키 Encoding: LUz3gX6MucCzt3GEJeLI2p1uffZns9cE5YlhQOeNHhZ8Fki40iLenLr8Uz21YPvzHHPlXYmIxhlf9%2F3a0d1Qow%3D%3D
 # 인증키 Decoding: LUz3gX6MucCzt3GEJeLI2p1uffZns9cE5YlhQOeNHhZ8Fki40iLenLr8Uz21YPvzHHPlXYmIxhlf9/3a0d1Qow==
