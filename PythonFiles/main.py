@@ -483,6 +483,9 @@ class MainFrame(tk.Frame):
         self.weather_icon['흐림 후 갬(낮)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐림 후 갬(낮).png")
         self.weather_icon['흐림 후 갬(밤)'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐림 후 갬(밤).png")
         self.weather_icon['구름많고 한때 비 곳'] = tk.PhotoImage(file="Resource\\WeatherIcon\\흐려져 비(낮).png")   #? 왜 이런 이름이 되게 나오는걸까
+        self.weather_icon['흐리고 한때 비'] = tk.PhotoImage(file = "Resource\\WeatherIcon\\약한비.png")
+        self.weather_icon['흐리고 한때 소나기'] = tk.PhotoImage(file="Resource\\WeatherIcon\\소나기.png")
+        self.weather_icon['흐리고 비'] = tk.PhotoImage(file="Resource\\WeatherIcon\\비.png")
 
 
 class BrowserFrame(tk.Frame):  # 지도 프레임
