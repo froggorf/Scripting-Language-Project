@@ -175,8 +175,7 @@ class MsrstnAcctoRltmMesureDnsty(Particulates):
             }
             self.particulates.append((particulate))
             break # 일단 하나만 받을거임
-        for p in self.particulates:
-            print(p)
+
         print("측정소별 실시간 측정정보 조회 class 생성")
 
     def getrenewalInfo(self):

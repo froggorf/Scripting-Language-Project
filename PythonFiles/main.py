@@ -192,10 +192,21 @@ class MainFrame(tk.Frame):
             "beLighting": self.particulate_belighting_button,
             "beCloudy": self.particulate_befoggy_button,
 
-            "beGreat": self.particulate_begreat_button,
-            "beNormal": self.particulate_benormal_button,
-            "beBad": self.particulate_bebad_button,
-            "beTooBad": self.particulate_betobad_button,
+            "beGreat_pm10"    : self.particulate_begreat_button,
+            "beGreat_pm25"    : self.particulate_begreat_button,
+            "beGreat_o3"      : self.particulate_begreat_button,
+
+            "beNormal_pm25"   : self.particulate_benormal_button,
+            "beNormal_pm10"   : self.particulate_benormal_button,
+            "beNormal_o3"   : self.particulate_benormal_button,
+
+            "beBad_pm10"      : self.particulate_bebad_button,
+            "beBad_pm25"      : self.particulate_bebad_button,
+            "beBad_o3"      : self.particulate_bebad_button,
+
+            "beTooBad_pm10"   : self.particulate_betobad_button,
+            "beTooBad_pm25"   : self.particulate_betobad_button,
+            "beTooBad_o3"   : self.particulate_betobad_button,
 
             "beHot": self.temperature_behot_button,
             "beCold": self.temperature_becold_button,
@@ -405,13 +416,23 @@ class MainFrame(tk.Frame):
         pass
 
     def pressChangeOption(self, str):
-        b = self.main_option.changeOptions(str)
-        # print(f'{self.option_button_diction=}, {str=}')
-        if b: self.option_button_diction[str]['bg'] = 'gray'
-        else: self.option_button_diction[str]['bg'] = 'white'
+        optionDict = self.main_option.__dict__
+        results = [key for key, value in optionDict.items() if key.startswith(str)]
+        # print(f"pressChange, {str=}, {results=}")
+        if len(results) == 1:
+            b = self.main_option.changeOptions(str)
+            if b: self.option_button_diction[str]['bg'] = 'gray'
+            else: self.option_button_diction[str]['bg'] = 'white'
+            # print(f'{self.option_button_diction=}, {str=}')
+        else:
+            for r in results:
+                b = self.main_option.changeOptions(r)
+                if b: self.option_button_diction[results[0]]['bg'] = 'gray'
+                else: self.option_button_diction[results[0]]['bg'] = 'white'
 
     def set_optionButton(self):
         for k, v in self.main_option.__dict__.items():
+            # print(k)
             if v: self.option_button_diction[k]['bg'] = 'gray'
             else: self.option_button_diction[k]['bg'] = 'white'
 
