@@ -139,6 +139,12 @@ class MainFrame(tk.Frame):
 
         print(self.notebook.tab(0)['text'])
 
+        # 탭3 옵션 추가
+        self.tab3_frame=tk.Frame(root)
+        self.notebook.add(self.tab3_frame, image = self.note_tab3_active_image)
+        self.option_frame = list()
+
+
     def PrintTab0(self):
         weathers = naverweather.GetWeatherInformation()
         self.weather_per_hour = weathers[3]
@@ -290,6 +296,7 @@ class MainFrame(tk.Frame):
         self.notebook.tab(self.tab0_frame, image = self.note_tab0_inactive_image)
         self.notebook.tab(self.tab1_frame, image = self.note_tab1_inactive_image)
         self.notebook.tab(self.tab2_frame, image = self.note_tab2_inactive_image)
+        self.notebook.tab(self.tab3_frame, image = self.note_tab3_inactive_image)
 
         # TODO: 나중에 배열로 리팩토링 진행해보기
         if index == 0:
@@ -298,6 +305,9 @@ class MainFrame(tk.Frame):
             self.notebook.tab(self.tab1_frame, image=self.note_tab1_active_image)
         elif index == 2:
             self.notebook.tab(self.tab2_frame, image=self.note_tab2_active_image)
+        elif index == 3:
+            self.notebook.tab(self.tab3_frame, image=self.note_tab3_active_image)
+
 
     # 모든 이미지 로드
     def LoadAllImage(self):
@@ -307,6 +317,8 @@ class MainFrame(tk.Frame):
         self.note_tab1_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab1_Inactive.png')
         self.note_tab2_active_image = tk.PhotoImage(file='Resource\\Note_Tab2_Active.png')
         self.note_tab2_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab2_Inactive.png')
+        self.note_tab3_active_image = tk.PhotoImage(file='Resource\\Note_Tab3_Active.png')
+        self.note_tab3_inactive_image = tk.PhotoImage(file='Resource\\Note_Tab3_Inactive.png')
         self.main_image = tk.PhotoImage(file='Resource\\MainImage.png')
 
     def ResetMapBrowser(self,url):
