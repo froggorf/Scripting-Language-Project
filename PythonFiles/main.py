@@ -4,6 +4,7 @@ from cefpython3 import cefpython as cef  # 지도 삽입용 모듈입니다.
 import naverweather
 from datetime import datetime
 import tkinter.font
+import option
 
 WINDOW_WIDTH = 800  # 윈도우 가로/세로
 WINDOW_HEIGHT = 1000
@@ -140,9 +141,30 @@ class MainFrame(tk.Frame):
         print(self.notebook.tab(0)['text'])
 
         # 탭3 옵션 추가
+        self.mainOption = option.Option()
+
         self.tab3_frame=tk.Frame(root)
         self.notebook.add(self.tab3_frame, image = self.note_tab3_active_image)
-        self.option_frame = list()
+
+        self.particulateFrame = tk.Frame(self.tab3_frame)
+        self.particulateFrame.place(x=150, y=200)
+        tk.Button(self.particulateFrame, text="좋음", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+        tk.Button(self.particulateFrame, text="보통", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+        tk.Button(self.particulateFrame, text="나쁨", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+        tk.Button(self.particulateFrame, text="매우나쁨", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+
+        self.weatherFrame = tk.Frame(self.tab3_frame)
+        self.weatherFrame.place(x=150, y=400)
+        tk.Button(self.weatherFrame, text="맑음", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+        tk.Button(self.weatherFrame, text="비", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+        tk.Button(self.weatherFrame, text="천둥", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+        tk.Button(self.weatherFrame, text="흐림", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+
+        tk.Button(self.tab3_frame, text="취소", font=temp_font, command=self.pressCancel).place(x=550,y=800)
+        tk.Button(self.tab3_frame, text="취소", font=temp_font, command=self.pressCancel).place(x=550,y=800)
+
+        tk.Button(self.tab3_frame, text="저장", font=temp_font, command=self.mainOption.save).place(x=650,y=800)
+        tk.Button(self.tab3_frame, text="취소", font=temp_font, command=self.pressCancel).place(x=550,y=800)
 
 
     def PrintTab0(self):
@@ -338,6 +360,10 @@ class MainFrame(tk.Frame):
 
     def close_window(self,_):
         self.root.destroy()
+
+    # tab3 관련 함수
+    def pressCancel(self):
+        pass
 
     def LoadWeatherIcon(self):
         self.weather_icon = dict()
