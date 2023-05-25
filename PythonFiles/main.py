@@ -140,32 +140,68 @@ class MainFrame(tk.Frame):
 
         print(self.notebook.tab(0)['text'])
 
-        # 탭3 옵션 추가
-        self.mainOption = option.Option()
+        # ===================================탭3 옵션 추가=========================================
+        self.main_option = option.Option()
 
         self.tab3_frame=tk.Frame(root)
         self.notebook.add(self.tab3_frame, image = self.note_tab3_active_image)
 
-        self.particulateFrame = tk.Frame(self.tab3_frame)
-        self.particulateFrame.place(x=150, y=200)
-        tk.Button(self.particulateFrame, text="좋음", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
-        tk.Button(self.particulateFrame, text="보통", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
-        tk.Button(self.particulateFrame, text="나쁨", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
-        tk.Button(self.particulateFrame, text="매우나쁨", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+        self.tab3_text_frame = tk.Frame(self.tab3_frame)
+        self.tab3_text_frame.place(x=50, y=100)
+        tk.Label(self.tab3_text_frame, text="설정", font=tkinter.font.Font(family="맑은 고딕", size=50)).grid(row=0, column=0, sticky='w')
+        tk.Label(self.tab3_text_frame, text="(받을알람)", font=tkinter.font.Font(family="맑은 고딕", size=15)).grid(row=0, column=1, sticky='s')
 
-        self.weatherFrame = tk.Frame(self.tab3_frame)
-        self.weatherFrame.place(x=150, y=400)
-        tk.Button(self.weatherFrame, text="맑음", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
-        tk.Button(self.weatherFrame, text="비", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
-        tk.Button(self.weatherFrame, text="천둥", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
-        tk.Button(self.weatherFrame, text="흐림", font=temp_font, command=self.pressCancel).pack(side=tk.LEFT)
+        self.particulate_frame = tk.Frame(self.tab3_frame)
+        self.particulate_frame.place(x=175, y=300)
+        tk.Label(self.tab3_frame, text="미세먼지", font=temp_font).place(x=50, y=300)
+        self.particulate_begreat_button     = tk.Button(self.particulate_frame, text="좋음", font=temp_font, command=lambda: self.pressChangeOption("beGreat"))
+        self.particulate_benormal_button    = tk.Button(self.particulate_frame, text="보통", font=temp_font, command=lambda: self.pressChangeOption("beNormal"))
+        self.particulate_bebad_button       = tk.Button(self.particulate_frame, text="나쁨", font=temp_font, command=lambda: self.pressChangeOption("beBad"))
+        self.particulate_betobad_button     = tk.Button(self.particulate_frame, text="매우나쁨", font=temp_font, command=lambda: self.pressChangeOption("beTooBad"))
+        self.particulate_begreat_button.pack(side=tk.LEFT)
+        self.particulate_benormal_button.pack(side=tk.LEFT)
+        self.particulate_bebad_button.pack(side=tk.LEFT)
+        self.particulate_betobad_button.pack(side=tk.LEFT)
 
+        self.weather_frame = tk.Frame(self.tab3_frame)
+        self.weather_frame.place(x=175, y=400)
+        tk.Label(self.tab3_frame, text="날씨", font=temp_font).place(x=50, y=400)
+        self.particulate_besunny_button     = tk.Button(self.weather_frame, text="맑음", font=temp_font, command=lambda: self.pressChangeOption("beSunny"))
+        self.particulate_berainy_button     = tk.Button(self.weather_frame, text=" 비 ", font=temp_font, command=lambda: self.pressChangeOption("beRainy"))
+        self.particulate_belighting_button  = tk.Button(self.weather_frame, text="천둥", font=temp_font, command=lambda: self.pressChangeOption("beLighting"))
+        self.particulate_befoggy_button     = tk.Button(self.weather_frame, text="흐림", font=temp_font, command=lambda: self.pressChangeOption("beFoggy"))
+        self.particulate_besunny_button.pack(side=tk.LEFT)
+        self.particulate_berainy_button.pack(side=tk.LEFT)
+        self.particulate_belighting_button.pack(side=tk.LEFT)
+        self.particulate_befoggy_button.pack(side=tk.LEFT)
+
+        self.temperature_frame = tk.Frame(self.tab3_frame)
+        self.temperature_frame.place(x=175, y=500)
+        tk.Label(self.tab3_frame, text="온도", font=temp_font).place(x=50, y=500)
+        self.temperature_behot_button = tk.Button(self.temperature_frame, text="급상승", font=temp_font, command=lambda: self.pressChangeOption("beHot"))
+        self.temperature_becold_button = tk.Button(self.temperature_frame, text="급강하", font=temp_font, command=lambda: self.pressChangeOption("beCold"))
+        self.temperature_behot_button.pack(side=tk.LEFT)
+        self.temperature_becold_button.pack(side=tk.LEFT)
+
+        tk.Button(self.tab3_frame, text="저장", font=temp_font, command=self.main_option.save).place(x=650,y=800)
         tk.Button(self.tab3_frame, text="취소", font=temp_font, command=self.pressCancel).place(x=550,y=800)
-        tk.Button(self.tab3_frame, text="취소", font=temp_font, command=self.pressCancel).place(x=550,y=800)
 
-        tk.Button(self.tab3_frame, text="저장", font=temp_font, command=self.mainOption.save).place(x=650,y=800)
-        tk.Button(self.tab3_frame, text="취소", font=temp_font, command=self.pressCancel).place(x=550,y=800)
+        self.option_button_diction = {
+            "beSunny": self.particulate_besunny_button,
+            "beRainy": self.particulate_berainy_button,
+            "beLighting": self.particulate_belighting_button,
+            "beFoggy": self.particulate_befoggy_button,
 
+            "beGreat": self.particulate_begreat_button,
+            "beNormal": self.particulate_benormal_button,
+            "beBad": self.particulate_bebad_button,
+            "beTooBad": self.particulate_betobad_button,
+
+            "beHot": self.temperature_behot_button,
+            "beCold": self.temperature_becold_button,
+        }
+
+        self.set_optionButton()
 
     def PrintTab0(self):
         weathers = naverweather.GetWeatherInformation()
@@ -307,6 +343,8 @@ class MainFrame(tk.Frame):
             pass
 
         elif select_notetab_index == 3:
+            self.main_option.load()
+            self.set_optionButton()
             pass
 
     # 노트북의 탭 이미지 활성화/비활성화
@@ -361,9 +399,25 @@ class MainFrame(tk.Frame):
     def close_window(self,_):
         self.root.destroy()
 
-    # tab3 관련 함수
+    # ===============================tab3 관련 함수===============================
     def pressCancel(self):
         pass
+
+    def pressChangeOption(self, str):
+        b = self.main_option.changeOptions(str)
+        # print(f'{self.option_button_diction=}, {str=}')
+        if b:
+            self.option_button_diction[str]['bg'] = 'gray'
+        else:
+            self.option_button_diction[str]['bg'] = 'white'
+
+    def set_optionButton(self):
+        for k, v in self.main_option.__dict__.items():
+            if v:
+                self.option_button_diction[k]['bg'] = 'gray'
+            else:
+                self.option_button_diction[k]['bg'] = 'white'
+
 
     def LoadWeatherIcon(self):
         self.weather_icon = dict()

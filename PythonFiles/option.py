@@ -4,21 +4,25 @@ import os.path
 class Option:
     def __init__(self):
         # 날씨
-        self.beRainy = False
-        self.beSunny = False
-        self.beCloudy = False
-        self.beClear = False
-        self.beDry = False
-        self.beHumid = False # 습함
-        self.beFoggy = False
+        self.beSunny    = False
+        self.beRainy    = False
+        self.beFoggy    = False
         self.beLighting = False
-        self.beWindy = False
+        # self.beCloudy   = False
+        # self.beClear    = False
+        # self.beDry      = False
+        # self.beHumid    = False # 습함
+        # self.beWindy    = False
 
         # 미세먼지
         self.beGreat = False
         self.beNormal = False
         self.beBad = False
         self.beTooBad = False
+
+        # 온도
+        self.beHot = False
+        self.beCold = False
 
         self.load()
 
@@ -36,6 +40,12 @@ class Option:
         else:
             print('No File')
 
+    def changeOptions(self, str):
+        optionDict = self.__dict__
+        optionDict[str] = bool(1 - optionDict[str])
+        self.__dict__.update(optionDict)
+        return optionDict[str]
+
+
 if __name__ == '__main__':
     o = Option()
-    o.load()
