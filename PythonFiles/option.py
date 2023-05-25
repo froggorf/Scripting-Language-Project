@@ -6,19 +6,29 @@ class Option:
         # 날씨
         self.beSunny    = False
         self.beRainy    = False
-        self.beFoggy    = False
         self.beLighting = False
-        # self.beCloudy   = False
+        self.beCloudy   = False
+        # self.beFoggy    = False
         # self.beClear    = False
         # self.beDry      = False
         # self.beHumid    = False # 습함
         # self.beWindy    = False
 
         # 미세먼지
-        self.beGreat = False
-        self.beNormal = False
-        self.beBad = False
-        self.beTooBad = False
+        self.beGreat_pm10 = False
+        self.beNormal_pm10 = False
+        self.beBad_pm10 = False
+        self.beTooBad_pm10 = False
+
+        self.beGreat_pm25 = False
+        self.beNormal_pm25 = False
+        self.beBad_pm25 = False
+        self.beTooBad_pm25 = False
+
+        self.beGreat_o3 = False
+        self.beNormal_o3 = False
+        self.beBad_o3 = False
+        self.beTooBad_o3 = False
 
         # 온도
         self.beHot = False

@@ -143,7 +143,7 @@ class MainFrame(tk.Frame):
         # ===================================탭3 옵션 추가=========================================
         self.main_option = option.Option()
 
-        self.tab3_frame=tk.Frame(root)
+        self.tab3_frame = tk.Frame(root)
         self.notebook.add(self.tab3_frame, image = self.note_tab3_active_image)
 
         self.tab3_text_frame = tk.Frame(self.tab3_frame)
@@ -190,7 +190,7 @@ class MainFrame(tk.Frame):
             "beSunny": self.particulate_besunny_button,
             "beRainy": self.particulate_berainy_button,
             "beLighting": self.particulate_belighting_button,
-            "beFoggy": self.particulate_befoggy_button,
+            "beCloudy": self.particulate_befoggy_button,
 
             "beGreat": self.particulate_begreat_button,
             "beNormal": self.particulate_benormal_button,

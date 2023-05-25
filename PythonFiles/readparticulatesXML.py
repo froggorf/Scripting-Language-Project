@@ -7,6 +7,7 @@
 
 import requests
 import xml.etree.ElementTree as ET
+import telegrambot as tbot
 
 class Particulates:
     def __init__(self):
@@ -173,7 +174,28 @@ class MsrstnAcctoRltmMesureDnsty(Particulates):
                 "dataTime": item.findtext("dataTime"),
             }
             self.particulates.append((particulate))
+            break # 일단 하나만 받을거임
+        for p in self.particulates:
+            print(p)
         print("측정소별 실시간 측정정보 조회 class 생성")
+
+    def getrenewalInfo(self):
+        pm10GradeList = ['beGreat_pm10', 'beNormal_pm10', 'beBad_pm10', 'beTooBad_pm10']
+        pm25GradeList = ['beGreat_pm25', 'beNormal_pm25', 'beBad_pm25', 'beTooBad_pm25']
+        o3GradeList = ['beGreat_o3', 'beNormal_o3', 'beBad_o3', 'beTooBad_o3']
+
+        current_info = self.particulates[0]
+        self.setNewResponse()
+        diffInfo = list()
+
+        if current_info['pm10Grade'] != self.particulates[0]['pm10Grade']:
+            diffInfo.append(pm10GradeList[self.particulates[0]['pm10Grade']])
+        if current_info['pm25Grade'] != self.particulates[0]['pm25Grade']:
+            diffInfo.append(pm25GradeList[self.particulates[0]['pm25Grade']])
+        if current_info['o3Grade'] != self.particulates[0]['o3Grade']:
+            diffInfo.append(o3GradeList[self.particulates[0]['o3Grade']])
+
+        return diffInfo
 
 # 통합대기환경지수 나쁨 이상 측정소 목록조회
 class UnityAirEnvrnIdexSnstiveAboveMsrstnList(Particulates):
@@ -268,6 +290,7 @@ class CtprvnRltmMesureDnsty(Particulates):
 
 if __name__ == "__main__":
     parti = MsrstnAcctoRltmMesureDnsty()
+    parti.getrenewalInfo()
 
 
 
