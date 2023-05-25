@@ -401,22 +401,19 @@ class MainFrame(tk.Frame):
 
     # ===============================tab3 관련 함수===============================
     def pressCancel(self):
+        self.notebook.select(0)
         pass
 
     def pressChangeOption(self, str):
         b = self.main_option.changeOptions(str)
         # print(f'{self.option_button_diction=}, {str=}')
-        if b:
-            self.option_button_diction[str]['bg'] = 'gray'
-        else:
-            self.option_button_diction[str]['bg'] = 'white'
+        if b: self.option_button_diction[str]['bg'] = 'gray'
+        else: self.option_button_diction[str]['bg'] = 'white'
 
     def set_optionButton(self):
         for k, v in self.main_option.__dict__.items():
-            if v:
-                self.option_button_diction[k]['bg'] = 'gray'
-            else:
-                self.option_button_diction[k]['bg'] = 'white'
+            if v: self.option_button_diction[k]['bg'] = 'gray'
+            else: self.option_button_diction[k]['bg'] = 'white'
 
 
     def LoadWeatherIcon(self):
