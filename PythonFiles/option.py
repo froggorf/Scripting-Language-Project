@@ -20,6 +20,8 @@ class Option:
         self.beBad = False
         self.beTooBad = False
 
+        self.load()
+
     def save(self):
         objects = self.__dict__
         print(objects)
