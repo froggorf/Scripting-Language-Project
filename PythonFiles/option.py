@@ -59,3 +59,6 @@ class Option:
 
 if __name__ == '__main__':
     o = Option()
+    diffInfo = ['beGreat_pm25', 'beNormal_pm10', 'beTooBad_o3',]
+    import telegrambot
+    telegrambot.TelegramBot.sendParticulateMessage("정왕동", o, diffInfo)
