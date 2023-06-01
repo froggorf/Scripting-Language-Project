@@ -174,11 +174,11 @@ class MsrstnAcctoRltmMesureDnsty(Particulates):
                 "dataTime": item.findtext("dataTime"),
             }
             self.particulates.append((particulate))
-            break # 일단 하나만 받을거임
+            # break # 일단 하나만 받을거임
 
         print("측정소별 실시간 측정정보 조회 class 생성")
 
-    def getrenewalInfo(self):
+    def getRenewalInfo(self):
         pm10GradeList = ['beGreat_pm10', 'beNormal_pm10', 'beBad_pm10', 'beTooBad_pm10']
         pm25GradeList = ['beGreat_pm25', 'beNormal_pm25', 'beBad_pm25', 'beTooBad_pm25']
         o3GradeList = ['beGreat_o3', 'beNormal_o3', 'beBad_o3', 'beTooBad_o3']
