@@ -6,6 +6,9 @@ from datetime import datetime
 import tkinter.font
 import option
 
+import readparticulatesXML
+import telegrambot
+
 WINDOW_WIDTH = 800  # 윈도우 가로/세로
 WINDOW_HEIGHT = 1000
 BACKGROUNDCOLOR = '#AAAAAA'
@@ -214,6 +217,13 @@ class MainFrame(tk.Frame):
 
         self.set_optionButton()
 
+        # 측정소별 실시간 측정정보 조회하는 클래스 생성
+        self.particulate = readparticulatesXML.MsrstnAcctoRltmMesureDnsty()
+        self.currentTimeHour = datetime.now().hour
+        self.telegram = telegrambot.TelegramBot()
+
+        self.timer()
+
     def PrintTab0(self):
         weathers = naverweather.GetWeatherInformation()
         self.weather_per_hour = weathers[3]
@@ -410,10 +420,21 @@ class MainFrame(tk.Frame):
     def close_window(self,_):
         self.root.destroy()
 
+
+    def timer(self):
+        # print("Run the Timer")
+        nowTimeHour = datetime.now().hour
+        if nowTimeHour != self.currentTimeHour:
+            GetTimeText()
+            diffList = self.particulate.getRenewalInfo()
+            # text = self.telegram.makeParticulateToStr(diffList)
+            self.telegram.sendParticulateMessage(self.location, self.main_option, diffList)
+        self.currentTimeHour = nowTimeHour
+        self.tab0_time_label.after(1000, self.timer)
+
     # ===============================tab3 관련 함수===============================
     def pressCancel(self):
         self.notebook.select(0)
-        pass
 
     def pressChangeOption(self, str):
         optionDict = self.main_option.__dict__
@@ -536,6 +557,7 @@ def GetNaverWeatherSearch(location,button):
     if button == '미세먼지':
         return "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + location + "+미세먼지&oquery=" + location + "&tqi=ibu4pdp0J1ZssTMblOwssssssio-160161"
     return "https://search.naver.com/search.naver?sm=tab_hty.top&where=nexearch&query=" + location + "+날씨&oquery=" + location + "&tqi=ibu4pdp0J1ZssTMblOwssssssio-160161"
+
 
 
 def GetTimeText():
