@@ -9,8 +9,19 @@ class TelegramBot:
     def sendParticulateMessage(location, main_option, changeInfo):  # 현재위치, 사용자가 켜둔 설정, 전과 달라진 정보들 모아둔 list
         str = "/"
         optionDict = main_option.__dict__
+        print("Run sendParticulateMessage!!")
+
+        if not changeInfo:
+            return
         for info in changeInfo:
             if optionDict[info]:
+                if info[-1] == '0':
+                    str += '미세먼지 - '
+                elif info[-1] == '5':
+                    str += '초미세먼지 - '
+                else:
+                    str += '오존 - '
+
                 str = str + textDict[info][0] + "/"
 
         sendText = datetime.today().strftime("%p %I:00 - ") + location + str
@@ -21,9 +32,11 @@ class TelegramBot:
         # print(res.json())
 
     @staticmethod
-    def makeParticulateToStr():
-
-        pass
+    def makeParticulateToStr(diffList):
+        text = ''
+        for d in diffList:
+            text += textDict[d][0]
+        return text
 
 textDict = {
         "beSunny"    : ["맑음", "구름없는 하늘이네요!"],
@@ -36,23 +49,23 @@ textDict = {
         # "beHumid"    : list(), # 습함
         # "beWindy"    : list(),
 
-        "beGreat_pm10"    : ["좋음"],
-        "beNormal_pm10"   : ["보통"],
-        "beBad_pm10"      : ["나쁨"],
-        "beTooBad_pm10"   : ["매우나쁨"],
+        "beGreat_pm10"    : ["좋음", ""],
+        "beNormal_pm10"   : ["보통", ""],
+        "beBad_pm10"      : ["나쁨", ""],
+        "beTooBad_pm10"   : ["매우나쁨", ""],
 
-        "beGreat_pm25"    : ["좋음"],
-        "beNormal_pm25"   : ["보통"],
-        "beBad_pm25"      : ["나쁨"],
-        "beTooBad_pm25"   : ["매우나쁨"],
+        "beGreat_pm25"    : ["좋음", ""],
+        "beNormal_pm25"   : ["보통", ""],
+        "beBad_pm25"      : ["나쁨", ""],
+        "beTooBad_pm25"   : ["매우나쁨", ""],
 
-        "beGreat_o3"    : ["좋음"],
-        "beNormal_o3"   : ["보통"],
-        "beBad_o3"      : ["나쁨"],
-        "beTooBad_o3"   : ["매우나쁨"],
+        "beGreat_o3"    : ["좋음", ""],
+        "beNormal_o3"   : ["보통", ""],
+        "beBad_o3"      : ["나쁨", ""],
+        "beTooBad_o3"   : ["매우나쁨", ""],
 
-        "beHot"   : ["더워집니다!"],
-        "beCold"   : ["추워집니다!"],
+        "beHot"   : ["급상승", "더워집니다!"],
+        "beCold"   : ["급하강", "추워집니다!"],
 }
 
 if __name__ == '__main__':
