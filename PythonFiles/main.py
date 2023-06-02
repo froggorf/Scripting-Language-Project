@@ -59,6 +59,7 @@ class MainFrame(tk.Frame):
         # 이미지 로드
         self.LoadAllImage()
         self.LoadWeatherIcon()
+        self.LoadParticulateIcon()
 
         # 메인 프레임
         super(MainFrame, self).__init__(root,highlightbackground="black",highlightthickness=10)
@@ -97,6 +98,40 @@ class MainFrame(tk.Frame):
         self.graph_canvas.configure(xscrollcommand=self.canvas_scrollX.set)
         self.graph_canvas.config(scrollregion=self.graph_canvas.bbox("all"))
 
+        # 측정소별 실시간 측정정보 조회하는 클래스 생성
+        self.particulate = readparticulatesXML.MsrstnAcctoRltmMesureDnsty()
+        self.currentTimeHour = datetime.now().hour
+        self.telegram = telegrambot.TelegramBot()
+
+        # self.tab0_particulate_frame1 = tk.Frame(self.tab0_frame)
+        # self.tab0_particulate_frame1.place(x=100, y=200)
+        # self.pm10_text_label = tk.Label(self.tab0_particulate_frame1, text="미세먼지", font=temp_font)
+        # self.pm10_image_label = tk.Label(self.tab0_particulate_frame1, image=self.particulateIcon[self.particulate.getPm10Grade()])
+        # self.pm10_gradeText_label = tk.Label(self.tab0_particulate_frame1, text=self.particulate.getPm10TextGrade(), font=temp_font)
+        #
+        # self.pm10_text_label.grid(row=0,column=0)
+        # self.pm10_image_label.grid(row=1,column=0)
+        # self.pm10_gradeText_label.grid(row=2, column=0)
+        #
+        # self.tab0_particulate_frame2 = tk.Frame(self.tab0_frame)
+        # self.tab0_particulate_frame2.place(x=300, y=200)
+        # self.pm25_text_label = tk.Label(self.tab0_particulate_frame2, text="초미세먼지", font=temp_font)
+        # self.pm25_image_label = tk.Label(self.tab0_particulate_frame2, image=self.particulateIcon[self.particulate.getPm25Grade()])
+        # self.pm25_gradeText_label = tk.Label(self.tab0_particulate_frame2, text=self.particulate.getPm25TextGrade(), font=temp_font)
+        #
+        # self.pm25_text_label.grid(row=0,column=0)
+        # self.pm25_image_label.grid(row=1,column=0)
+        # self.pm25_gradeText_label.grid(row=2, column=0)
+        #
+        # self.tab0_particulate_frame3 = tk.Frame(self.tab0_frame)
+        # self.tab0_particulate_frame3.place(x=550, y=200)
+        # self.o3_text_label = tk.Label(self.tab0_particulate_frame3, text="오존", font=temp_font)
+        # self.o3_image_label = tk.Label(self.tab0_particulate_frame3, image=self.particulateIcon[self.particulate.getO3Grade()])
+        # self.o3_gradeText_label = tk.Label(self.tab0_particulate_frame3, text=self.particulate.getO3TextGrade(), font=temp_font)
+        #
+        # self.o3_text_label.grid(row=0,column=0)
+        # self.o3_image_label.grid(row=1,column=0)
+        # self.o3_gradeText_label.grid(row=2, column=0)
 
         tk.Label(self.tab0_frame, text= "시간별 그래프 // 미세먼지 추가 예정",font=temp_font).place(x=50,y=470)
 
@@ -217,10 +252,7 @@ class MainFrame(tk.Frame):
 
         self.set_optionButton()
 
-        # 측정소별 실시간 측정정보 조회하는 클래스 생성
-        self.particulate = readparticulatesXML.MsrstnAcctoRltmMesureDnsty()
-        self.currentTimeHour = datetime.now().hour
-        self.telegram = telegrambot.TelegramBot()
+
 
         self.timer()
 
@@ -510,6 +542,12 @@ class MainFrame(tk.Frame):
         self.weather_icon['흐리고 한때 소나기'] = tk.PhotoImage(file="Resource\\WeatherIcon\\소나기.png")
         self.weather_icon['흐리고 비'] = tk.PhotoImage(file="Resource\\WeatherIcon\\비.png")
 
+    def LoadParticulateIcon(self):
+        self.particulateIcon = list()
+        self.particulateIcon.append(tk.PhotoImage(file="Resource\\FaceIcon\\good.png"))
+        self.particulateIcon.append(tk.PhotoImage(file="Resource\\FaceIcon\\normal.png"))
+        self.particulateIcon.append(tk.PhotoImage(file="Resource\\FaceIcon\\bad.png"))
+        self.particulateIcon.append(tk.PhotoImage(file="Resource\\FaceIcon\\toobad.png"))
 
 class BrowserFrame(tk.Frame):  # 지도 프레임
     def __init__(self, mainframe, url):
