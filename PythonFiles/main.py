@@ -424,12 +424,14 @@ class MainFrame(tk.Frame):
     def timer(self):
         # print("Run the Timer")
         nowTimeHour = datetime.now().hour
-        if nowTimeHour != self.currentTimeHour:
-            GetTimeText()
-            diffList = self.particulate.getRenewalInfo()
-            # text = self.telegram.makeParticulateToStr(diffList)
-            self.telegram.sendParticulateMessage(self.location, self.main_option, diffList)
-        self.currentTimeHour = nowTimeHour
+        # 정각에 바로 정보를 업데이트되는건 아니라 15분까지 대기
+        if datetime.now().minute == 15:
+            if nowTimeHour != self.currentTimeHour:
+                GetTimeText()
+                diffList = self.particulate.getRenewalInfo()
+                # text = self.telegram.makeParticulateToStr(diffList)
+                self.telegram.sendParticulateMessage(self.location, self.main_option, diffList)
+                self.currentTimeHour = nowTimeHour
         self.tab0_time_label.after(1000, self.timer)
 
     # ===============================tab3 관련 함수===============================
