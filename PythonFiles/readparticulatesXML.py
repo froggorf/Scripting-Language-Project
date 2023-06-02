@@ -177,6 +177,7 @@ class MsrstnAcctoRltmMesureDnsty(Particulates):
             # break # 일단 하나만 받을거임
 
         print("측정소별 실시간 측정정보 조회 class 생성")
+        print(self.particulates[0])
 
     def getRenewalInfo(self):
         pm10GradeList = ['beGreat_pm10', 'beNormal_pm10', 'beBad_pm10', 'beTooBad_pm10']
@@ -195,6 +196,22 @@ class MsrstnAcctoRltmMesureDnsty(Particulates):
             diffInfo.append(o3GradeList[self.particulates[0]['o3Grade']])
 
         return diffInfo
+
+    def getPm10Grade(self):
+        return int(self.particulates[0]['pm10Grade']) - 1
+    def getPm10TextGrade(self):
+        text = ['좋음', '보통', '나쁨', '매우나쁨']
+        return text[self.getPm10Grade()]
+    def getPm25Grade(self):
+        return int(self.particulates[0]['pm25Grade']) - 1
+    def getPm25TextGrade(self):
+        text = ['좋음', '보통', '나쁨', '매우나쁨']
+        return text[self.getPm25Grade()]
+    def getO3Grade(self):
+        return int(self.particulates[0]['o3Grade']) - 1
+    def getO3TextGrade(self):
+        text = ['좋음', '보통', '나쁨', '매우나쁨']
+        return text[self.getO3Grade()]
 
 # 통합대기환경지수 나쁨 이상 측정소 목록조회
 class UnityAirEnvrnIdexSnstiveAboveMsrstnList(Particulates):
