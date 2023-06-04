@@ -25,7 +25,7 @@ def main():
 
 class MainFrame(tk.Frame):
     def __init__(self, root):
-        temp_font = tkinter.font.Font(family="맑은 고딕", size=20, slant="italic")
+        temp_font = tkinter.font.Font(family="맑은 고딕", size=20)
 
         style = tk.ttk.Style()
         #current_theme = style.theme_use()
@@ -77,23 +77,23 @@ class MainFrame(tk.Frame):
         # 탭0 추가
         self.tab0_frame = tk.Frame(root)
         self.notebook.add(self.tab0_frame, image = self.note_tab2_inactive_image)
-        tk.Label(self.tab0_frame, text="설정 지역 날씨", font=temp_font).place(x=0, y=0)
-        tk.Label(self.tab0_frame, text="현재 지역: ", font=temp_font).place(x=250, y=0)
+        #tk.Label(self.tab0_frame, text="설정 지역 날씨", font=tkinter.font.Font(family="맑은 고딕", size=30,weight = "bold")).place(x=0, y=0)
+        #tk.Label(self.tab0_frame, text="현재 지역: ", font=temp_font).place(x=250, y=0)
         self.tab0_location_label = tk.Label(self.tab0_frame, text="현재 지역", font=temp_font)
-        self.tab0_location_label.place(x=500,y=0)
+        self.tab0_location_label.place(x=100, y=40)
         self.tab0_temperature_label = tk.Label(self.tab0_frame, text="온도", font=temp_font)
-        self.tab0_temperature_label.place(x=0,y=50)
-        self.tab0_weather_state_label = tk.Label(self.tab0_frame, text="상태", font=temp_font)
-        self.tab0_weather_state_label.place(x=250,y=50)
-        tk.Label(self.tab0_frame, text="갱신 시간", font=temp_font).place(x=0,y=100)
+        self.tab0_temperature_label.place(x=100,y=85)
+        #self.tab0_weather_state_label = tk.Label(self.tab0_frame, text="상태", font=temp_font)
+        #self.tab0_weather_state_label.place(x=250,y=50)
+        tk.Label(self.tab0_frame, text="갱신 시간: ", font=temp_font).place(x=100,y=130)
         self.tab0_time_label = tk.Label(self.tab0_frame, text="시간", font=temp_font)
-        self.tab0_time_label.place(x=250,y=100)
-        tk.Button(self.tab0_frame, text="갱신", font=temp_font, command=self.PrintTab0).place(x=550,y=100)
+        self.tab0_time_label.place(x=260,y=130)
+        tk.Button(self.tab0_frame, text="갱신", font=tkinter.font.Font(family="맑은 고딕", size=15), command=self.PrintTab0,anchor = "center",background = "#AAAAAA").place(x=550,y=130)
         self.graph_canvas = tk.Canvas(self.tab0_frame,width = 650, height = 300, bg='white',bd=2)
-        self.graph_canvas.place(x=50,y=520)
+        self.graph_canvas.place(x=50,y=550)
         self.canvas_scrollX = tk.Scrollbar(self.tab0_frame)
         self.canvas_scrollX.config(orient = tk.HORIZONTAL,command=self.graph_canvas.xview)
-        self.canvas_scrollX.place(x=50,y=820,width = 650)
+        self.canvas_scrollX.place(x=50,y=850,width = 650)
 
         self.graph_canvas.configure(xscrollcommand=self.canvas_scrollX.set)
         self.graph_canvas.config(scrollregion=self.graph_canvas.bbox("all"))
@@ -103,37 +103,38 @@ class MainFrame(tk.Frame):
         self.currentTimeHour = datetime.now().hour
         self.telegram = telegrambot.TelegramBot()
 
-        # self.tab0_particulate_frame1 = tk.Frame(self.tab0_frame)
-        # self.tab0_particulate_frame1.place(x=100, y=200)
-        # self.pm10_text_label = tk.Label(self.tab0_particulate_frame1, text="미세먼지", font=temp_font)
-        # self.pm10_image_label = tk.Label(self.tab0_particulate_frame1, image=self.particulateIcon[self.particulate.getPm10Grade()])
-        # self.pm10_gradeText_label = tk.Label(self.tab0_particulate_frame1, text=self.particulate.getPm10TextGrade(), font=temp_font)
-        #
-        # self.pm10_text_label.grid(row=0,column=0)
-        # self.pm10_image_label.grid(row=1,column=0)
-        # self.pm10_gradeText_label.grid(row=2, column=0)
-        #
-        # self.tab0_particulate_frame2 = tk.Frame(self.tab0_frame)
-        # self.tab0_particulate_frame2.place(x=300, y=200)
-        # self.pm25_text_label = tk.Label(self.tab0_particulate_frame2, text="초미세먼지", font=temp_font)
-        # self.pm25_image_label = tk.Label(self.tab0_particulate_frame2, image=self.particulateIcon[self.particulate.getPm25Grade()])
-        # self.pm25_gradeText_label = tk.Label(self.tab0_particulate_frame2, text=self.particulate.getPm25TextGrade(), font=temp_font)
-        #
-        # self.pm25_text_label.grid(row=0,column=0)
-        # self.pm25_image_label.grid(row=1,column=0)
-        # self.pm25_gradeText_label.grid(row=2, column=0)
-        #
-        # self.tab0_particulate_frame3 = tk.Frame(self.tab0_frame)
-        # self.tab0_particulate_frame3.place(x=550, y=200)
-        # self.o3_text_label = tk.Label(self.tab0_particulate_frame3, text="오존", font=temp_font)
-        # self.o3_image_label = tk.Label(self.tab0_particulate_frame3, image=self.particulateIcon[self.particulate.getO3Grade()])
-        # self.o3_gradeText_label = tk.Label(self.tab0_particulate_frame3, text=self.particulate.getO3TextGrade(), font=temp_font)
-        #
-        # self.o3_text_label.grid(row=0,column=0)
-        # self.o3_image_label.grid(row=1,column=0)
-        # self.o3_gradeText_label.grid(row=2, column=0)
+        self.tab0_particulate_frame1 = tk.Frame(self.tab0_frame)
+        self.tab0_particulate_frame1.place(x=100, y=250)
+        self.pm10_text_label = tk.Label(self.tab0_particulate_frame1, text="미세먼지", font=temp_font)
+        self.pm10_image_label = tk.Label(self.tab0_particulate_frame1, image=self.particulateIcon[self.particulate.getPm10Grade()])
+        self.pm10_gradeText_label = tk.Label(self.tab0_particulate_frame1, text=self.particulate.getPm10TextGrade(), font=temp_font)
 
-        tk.Label(self.tab0_frame, text= "시간별 그래프 // 미세먼지 추가 예정",font=temp_font).place(x=50,y=470)
+        self.pm10_text_label.grid(row=0,column=0)
+        self.pm10_image_label.grid(row=1,column=0)
+        self.pm10_gradeText_label.grid(row=2, column=0)
+
+
+        self.tab0_particulate_frame2 = tk.Frame(self.tab0_frame)
+        self.tab0_particulate_frame2.place(x=300, y=250)
+        self.pm25_text_label = tk.Label(self.tab0_particulate_frame2, text="초미세먼지", font=temp_font)
+        self.pm25_image_label = tk.Label(self.tab0_particulate_frame2, image=self.particulateIcon[self.particulate.getPm25Grade()])
+        self.pm25_gradeText_label = tk.Label(self.tab0_particulate_frame2, text=self.particulate.getPm25TextGrade(), font=temp_font)
+
+        self.pm25_text_label.grid(row=0,column=0)
+        self.pm25_image_label.grid(row=1,column=0)
+        self.pm25_gradeText_label.grid(row=2, column=0)
+
+        self.tab0_particulate_frame3 = tk.Frame(self.tab0_frame)
+        self.tab0_particulate_frame3.place(x=550, y=250)
+        self.o3_text_label = tk.Label(self.tab0_particulate_frame3, text="오존", font=temp_font)
+        self.o3_image_label = tk.Label(self.tab0_particulate_frame3, image=self.particulateIcon[self.particulate.getO3Grade()])
+        self.o3_gradeText_label = tk.Label(self.tab0_particulate_frame3, text=self.particulate.getO3TextGrade(), font=temp_font)
+
+        self.o3_text_label.grid(row=0,column=0)
+        self.o3_image_label.grid(row=1,column=0)
+        self.o3_gradeText_label.grid(row=2, column=0)
+
+        tk.Label(self.tab0_frame, text= "시간별 그래프",font=temp_font).place(x=300,y=500)
 
         # 탭1 추가
         self.tab1_frame = tk.Frame(root)
@@ -141,18 +142,22 @@ class MainFrame(tk.Frame):
         # tk.Label(self.tab1_frame, text="지도").pack()
         self.map_weather_url = "https://weather.naver.com/map/02390118"
         self.map_dust_url = "https://weather.naver.com/air/02390118"
-        tk.Button(self.tab1_frame,text="지도 초기화(날씨)",command=lambda: self.ResetMapBrowser(self.map_weather_url),font=temp_font,background='#888888').place(x=50,y=80)
-        tk.Button(self.tab1_frame, text="지도 초기화(미세먼지)", command=lambda: self.ResetMapBrowser(self.map_dust_url),font=temp_font, background='#888888').place(x=300, y=80)
+        tk.Button(self.tab1_frame,text="지도 초기화(날씨)",command=lambda: self.ResetMapBrowser(self.map_weather_url),font=tkinter.font.Font(family="맑은 고딕", size=15),background='#888888').place(x=180,y=80)
+        tk.Button(self.tab1_frame, text="지도 초기화(미세먼지)", command=lambda: self.ResetMapBrowser(self.map_dust_url),font=tkinter.font.Font(family="맑은 고딕", size=15), background='#888888').place(x=370, y=80)
+        tk.Label(self.tab1_frame, text= "").grid(row=0,column=0)
+        tk.Label(self.tab1_frame, text="       ",font = temp_font).grid(row=1,column=0)
+        tk.Label(self.tab1_frame, text="지역 검색 : ",font = temp_font).grid(row=1, column=1)
 
-        tk.Label(self.tab1_frame, text="날씨를 검색할 지역 이름을 적어주세요 ex) 정왕").grid(row=0, column=0)
 
         self.search_entrybox = tk.Entry(self.tab1_frame, font=temp_font)
         self.search_entrybox.bind("<Return>", self.SearchInput)
         self.search_entrybox.bind("<Button-1>", self.SearchLButton)
-        self.search_entrybox.grid(row=0, column=1)
+        self.search_entrybox.grid(row=1, column=2)
 
-        tk.Button(self.tab1_frame, text="날씨", command = lambda x= '날씨' : self.SearchInput(x), font=temp_font).grid(row=0, column=2)
-        tk.Button(self.tab1_frame,text="미세먼지",command= lambda x='미세먼지':self.SearchInput(x),font=temp_font).grid(row=0,column=3)
+        tk.Label(self.tab1_frame,text=" ",font = temp_font).grid(row = 1,column=3)
+        tk.Button(self.tab1_frame, text="날씨",font = tkinter.font.Font(family="맑은 고딕", size=12) ,command = lambda x= '날씨' : self.SearchInput(x)).grid(row=1, column=4)
+        tk.Label(self.tab1_frame, text=" ", font=temp_font).grid(row=1, column=5)
+        tk.Button(self.tab1_frame,text="미세먼지",font=tkinter.font.Font(family="맑은 고딕", size=12),command= lambda x='미세먼지':self.SearchInput(x)).grid(row=1,column=6)
 
 
         # 탭2 추가
@@ -174,7 +179,7 @@ class MainFrame(tk.Frame):
         # 검색 Frame
         #self.search_frame = BrowserFrame(self, "https://www.google.com")
 
-        tk.Label(root, text="기관지 지킴이",font = temp_font,background=BACKGROUNDCOLOR).place(x=600,y=25)
+        #tk.Label(root, text="기관지 지킴이",font = tkinter.font.Font(family="맑은 고딕", size=25, weight = "bold"),background=BACKGROUNDCOLOR).place(x=620,y=15)
 
         print(self.notebook.tab(0)['text'])
 
@@ -185,13 +190,13 @@ class MainFrame(tk.Frame):
         self.notebook.add(self.tab3_frame, image = self.note_tab3_active_image)
 
         self.tab3_text_frame = tk.Frame(self.tab3_frame)
-        self.tab3_text_frame.place(x=50, y=100)
+        self.tab3_text_frame.place(x=275, y=100)
         tk.Label(self.tab3_text_frame, text="설정", font=tkinter.font.Font(family="맑은 고딕", size=50)).grid(row=0, column=0, sticky='w')
         tk.Label(self.tab3_text_frame, text="(받을알람)", font=tkinter.font.Font(family="맑은 고딕", size=15)).grid(row=0, column=1, sticky='s')
 
         self.particulate_frame = tk.Frame(self.tab3_frame)
-        self.particulate_frame.place(x=175, y=300)
-        tk.Label(self.tab3_frame, text="미세먼지", font=temp_font).place(x=50, y=300)
+        self.particulate_frame.place(x=250, y=300)
+        tk.Label(self.tab3_frame, text="미세먼지", font=temp_font).place(x=125, y=300)
         self.particulate_begreat_button     = tk.Button(self.particulate_frame, text="좋음", font=temp_font, command=lambda: self.pressChangeOption("beGreat"))
         self.particulate_benormal_button    = tk.Button(self.particulate_frame, text="보통", font=temp_font, command=lambda: self.pressChangeOption("beNormal"))
         self.particulate_bebad_button       = tk.Button(self.particulate_frame, text="나쁨", font=temp_font, command=lambda: self.pressChangeOption("beBad"))
@@ -202,8 +207,8 @@ class MainFrame(tk.Frame):
         self.particulate_betobad_button.pack(side=tk.LEFT)
 
         self.weather_frame = tk.Frame(self.tab3_frame)
-        self.weather_frame.place(x=175, y=400)
-        tk.Label(self.tab3_frame, text="날씨", font=temp_font).place(x=50, y=400)
+        self.weather_frame.place(x=250, y=400)
+        tk.Label(self.tab3_frame, text="날씨", font=temp_font).place(x=125, y=400)
         self.particulate_besunny_button     = tk.Button(self.weather_frame, text="맑음", font=temp_font, command=lambda: self.pressChangeOption("beSunny"))
         self.particulate_berainy_button     = tk.Button(self.weather_frame, text=" 비 ", font=temp_font, command=lambda: self.pressChangeOption("beRainy"))
         self.particulate_belighting_button  = tk.Button(self.weather_frame, text="천둥", font=temp_font, command=lambda: self.pressChangeOption("beLighting"))
@@ -214,8 +219,8 @@ class MainFrame(tk.Frame):
         self.particulate_befoggy_button.pack(side=tk.LEFT)
 
         self.temperature_frame = tk.Frame(self.tab3_frame)
-        self.temperature_frame.place(x=175, y=500)
-        tk.Label(self.tab3_frame, text="온도", font=temp_font).place(x=50, y=500)
+        self.temperature_frame.place(x=250, y=500)
+        tk.Label(self.tab3_frame, text="온도", font=temp_font).place(x=125, y=500)
         self.temperature_behot_button = tk.Button(self.temperature_frame, text="급상승", font=temp_font, command=lambda: self.pressChangeOption("beHot"))
         self.temperature_becold_button = tk.Button(self.temperature_frame, text="급강하", font=temp_font, command=lambda: self.pressChangeOption("beCold"))
         self.temperature_behot_button.pack(side=tk.LEFT)
@@ -260,9 +265,9 @@ class MainFrame(tk.Frame):
         weathers = naverweather.GetWeatherInformation()
         self.weather_per_hour = weathers[3]
         #TODO: 미세먼지 관련 그래프로 추가 예정 self.dust_per_hour = weathers[4]
-        self.tab0_location_label.configure(text=weathers[0])
-        self.tab0_temperature_label.configure(text=weathers[1])
-        self.tab0_weather_state_label.configure(text=weathers[2])
+        self.tab0_location_label.configure(text="현재 지역:    "+weathers[0])
+        self.tab0_temperature_label.configure(text="지역 날씨:    "+weathers[1] + "   /   " + weathers[2])
+        #self.tab0_weather_state_label.configure(text="("+weathers[2]+")")
         self.tab0_time_label.configure(text=GetTimeText())
         #TODO: 나중엔 미세먼지랑 날씨 라디오 버튼이든 버튼으로든 받아서 그거로 나눠서 그려지게 할 예정
         self.DrawGraph()
@@ -276,8 +281,8 @@ class MainFrame(tk.Frame):
         gap = 100
         prev_x = 0
         prev_y = 0
-        self.graph_canvas.create_text(20, 10,text= str(maxdegree)+'°',font = ('Arial',14))
-        self.graph_canvas.create_text(20, 150, text=str(mindegree) + '°', font=('Arial', 14))
+        self.graph_canvas.create_text(25, 15,text= str(maxdegree)+'°',font = ('Arial',14))
+        self.graph_canvas.create_text(25, 150, text=str(mindegree) + '°', font=('Arial', 14))
         for index, data in enumerate(self.weather_per_hour[2]):
             x = index * gap + gap/2
             percent = (data - mindegree) / (maxdegree-mindegree)
@@ -330,7 +335,7 @@ class MainFrame(tk.Frame):
 
         #정보 삽입
         for i in range(10):
-            tk.Label(self.week_forecast_frame[i], text = date[i][0]).place(x=0,y=30)
+            tk.Label(self.week_forecast_frame[i], text = date[i][0]).place(x=5,y=30)
             tk.Label(self.week_forecast_frame[i], text=date[i][1]).place(x=50, y=30)
             tk.Label(self.week_forecast_frame[i], text = "오전").place(x=100,y=30)
             tk.Label(self.week_forecast_frame[i], text="강수: "+rain_am[i]).place(x=130,y=30)
