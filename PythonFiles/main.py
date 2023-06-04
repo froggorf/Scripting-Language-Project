@@ -142,8 +142,8 @@ class MainFrame(tk.Frame):
         # tk.Label(self.tab1_frame, text="지도").pack()
         self.map_weather_url = "https://weather.naver.com/map/02390118"
         self.map_dust_url = "https://weather.naver.com/air/02390118"
-        tk.Button(self.tab1_frame,text="지도 초기화(날씨)",command=lambda: self.ResetMapBrowser(self.map_weather_url),font=tkinter.font.Font(family="맑은 고딕", size=15),background='#888888').place(x=180,y=80)
-        tk.Button(self.tab1_frame, text="지도 초기화(미세먼지)", command=lambda: self.ResetMapBrowser(self.map_dust_url),font=tkinter.font.Font(family="맑은 고딕", size=15), background='#888888').place(x=370, y=80)
+        tk.Button(self.tab1_frame,text="   날씨 지도   ",command=lambda: self.ResetMapBrowser(self.map_weather_url),font=tkinter.font.Font(family="맑은 고딕", size=18),background='#CCCCCC').place(x=180,y=80)
+        tk.Button(self.tab1_frame, text="  미세먼지 지도  ", command=lambda: self.ResetMapBrowser(self.map_dust_url),font=tkinter.font.Font(family="맑은 고딕", size=18), background='#CCCCCC').place(x=370, y=80)
         tk.Label(self.tab1_frame, text= "").grid(row=0,column=0)
         tk.Label(self.tab1_frame, text="       ",font = temp_font).grid(row=1,column=0)
         tk.Label(self.tab1_frame, text="지역 검색 : ",font = temp_font).grid(row=1, column=1)
@@ -155,9 +155,9 @@ class MainFrame(tk.Frame):
         self.search_entrybox.grid(row=1, column=2)
 
         tk.Label(self.tab1_frame,text=" ",font = temp_font).grid(row = 1,column=3)
-        tk.Button(self.tab1_frame, text="날씨",font = tkinter.font.Font(family="맑은 고딕", size=12) ,command = lambda x= '날씨' : self.SearchInput(x)).grid(row=1, column=4)
+        tk.Button(self.tab1_frame, text="날씨",font = tkinter.font.Font(family="맑은 고딕", size=12),background="#CCCCCC" ,command = lambda x= '날씨' : self.SearchInput(x)).grid(row=1, column=4)
         tk.Label(self.tab1_frame, text=" ", font=temp_font).grid(row=1, column=5)
-        tk.Button(self.tab1_frame,text="미세먼지",font=tkinter.font.Font(family="맑은 고딕", size=12),command= lambda x='미세먼지':self.SearchInput(x)).grid(row=1,column=6)
+        tk.Button(self.tab1_frame,text="미세먼지",font=tkinter.font.Font(family="맑은 고딕", size=12),background="#CCCCCC",command= lambda x='미세먼지':self.SearchInput(x)).grid(row=1,column=6)
 
 
         # 탭2 추가
@@ -226,7 +226,7 @@ class MainFrame(tk.Frame):
         self.temperature_behot_button.pack(side=tk.LEFT)
         self.temperature_becold_button.pack(side=tk.LEFT)
 
-        tk.Button(self.tab3_frame, text="저장", font=temp_font, command=self.main_option.save).place(x=650,y=800)
+        tk.Button(self.tab3_frame, text="저장", font=temp_font, command=self.main_option.save,background="#CCCCCC").place(x=650,y=800)
         tk.Button(self.tab3_frame, text="취소", font=temp_font, command=self.pressCancel).place(x=550,y=800)
 
         self.option_button_diction = {
