@@ -177,7 +177,7 @@ class MsrstnAcctoRltmMesureDnsty(Particulates):
             # break # 일단 하나만 받을거임
 
         print("측정소별 실시간 측정정보 조회 class 생성")
-        print(self.particulates[0])
+        # print(self.particulates[0])
 
     def getRenewalInfo(self):
         pm10GradeList = ['beGreat_pm10', 'beNormal_pm10', 'beBad_pm10', 'beTooBad_pm10']
