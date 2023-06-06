@@ -553,6 +553,7 @@ class MainFrame(tk.Frame):
         self.particulateIcon.append(tk.PhotoImage(file="Resource\\FaceIcon\\normal.png"))
         self.particulateIcon.append(tk.PhotoImage(file="Resource\\FaceIcon\\bad.png"))
         self.particulateIcon.append(tk.PhotoImage(file="Resource\\FaceIcon\\toobad.png"))
+        self.particulateIcon.append(tk.PhotoImage(file="Resource\\FaceIcon\\None.png"))
 
 class BrowserFrame(tk.Frame):  # 지도 프레임
     def __init__(self, mainframe, url):

@@ -198,19 +198,25 @@ class MsrstnAcctoRltmMesureDnsty(Particulates):
         return diffInfo
 
     def getPm10Grade(self):
+        if self.particulates[0]['pm10Grade'] == '':
+            return 4 # 관측소 오류
         return int(self.particulates[0]['pm10Grade']) - 1
     def getPm10TextGrade(self):
-        text = ['좋음', '보통', '나쁨', '매우나쁨']
+        text = ['좋음', '보통', '나쁨', '매우나쁨', '관측소 오류']
         return text[self.getPm10Grade()]
     def getPm25Grade(self):
+        if self.particulates[0]['pm25Grade'] == '':
+            return 4 # 관측소 오류
         return int(self.particulates[0]['pm25Grade']) - 1
     def getPm25TextGrade(self):
-        text = ['좋음', '보통', '나쁨', '매우나쁨']
+        text = ['좋음', '보통', '나쁨', '매우나쁨', '관측소 오류']
         return text[self.getPm25Grade()]
     def getO3Grade(self):
+        if self.particulates[0]['o3Grade'] == '':
+            return 4 # 관측소 오류
         return int(self.particulates[0]['o3Grade']) - 1
     def getO3TextGrade(self):
-        text = ['좋음', '보통', '나쁨', '매우나쁨']
+        text = ['좋음', '보통', '나쁨', '매우나쁨', '관측소 오류']
         return text[self.getO3Grade()]
 
 # 통합대기환경지수 나쁨 이상 측정소 목록조회
