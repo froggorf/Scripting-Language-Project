@@ -469,9 +469,11 @@ class MainFrame(tk.Frame):
                 # text = self.telegram.makeParticulateToStr(diffList)
                 self.telegram.sendParticulateMessage(self.location, self.main_option, diffList)
                 self.currentTimeHour = nowTimeHour
-        self.tab0_time_label.after(1000, self.timer)
+                self.changeParticulateImage()
+                self.tab0_frame.update()
+        self.tab0_time_label.after(1000 * 60, self.timer)
 
-    # ===============================tab3 관련 함수===============================
+    # ===============================tab3 관련 함수 + 미세먼지===============================
     def pressCancel(self):
         self.notebook.select(0)
 
@@ -495,6 +497,25 @@ class MainFrame(tk.Frame):
             # print(k)
             if v: self.option_button_diction[k]['bg'] = 'gray'
             else: self.option_button_diction[k]['bg'] = 'white'
+
+    def changeParticulateImage(self):
+        self.pm10_image_label.configure(image=self.particulateIcon[self.particulate.getPm10Grade()])
+        self.pm10_gradeText_label.configure(text=self.particulate.getPm10TextGrade())
+
+        self.pm25_image_label.configure(image=self.particulateIcon[self.particulate.getPm25Grade()])
+        self.pm25_gradeText_label.configure(text=self.particulate.getPm25TextGrade())
+
+        self.o3_image_label.configure(image=self.particulateIcon[self.particulate.getO3Grade()])
+        self.o3_gradeText_label.configure(text=self.particulate.getO3TextGrade())
+
+        self.pm10_image_label.grid(row=1,column=0)
+        self.pm10_gradeText_label.grid(row=2, column=0)
+
+        self.pm25_image_label.grid(row=1,column=0)
+        self.pm25_gradeText_label.grid(row=2, column=0)
+
+        self.o3_image_label.grid(row=1,column=0)
+        self.o3_gradeText_label.grid(row=2, column=0)
 
 
     def LoadWeatherIcon(self):
