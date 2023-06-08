@@ -5,9 +5,11 @@ import naverweather
 from datetime import datetime
 import tkinter.font
 import option
+import spam
 
 import readparticulatesXML
 import telegrambot
+
 
 WINDOW_WIDTH = 800  # 윈도우 가로/세로
 WINDOW_HEIGHT = 1000
@@ -192,7 +194,7 @@ class MainFrame(tk.Frame):
         self.tab3_text_frame = tk.Frame(self.tab3_frame)
         self.tab3_text_frame.place(x=275, y=100)
         tk.Label(self.tab3_text_frame, text="설정", font=tkinter.font.Font(family="맑은 고딕", size=50)).grid(row=0, column=0, sticky='w')
-        tk.Label(self.tab3_text_frame, text="(받을알람)", font=tkinter.font.Font(family="맑은 고딕", size=15)).grid(row=0, column=1, sticky='s')
+        tk.Label(self.tab3_text_frame, text=spam.addStrBracket("받을알람"), font=tkinter.font.Font(family="맑은 고딕", size=15)).grid(row=0, column=1, sticky='s')
 
         self.particulate_frame = tk.Frame(self.tab3_frame)
         self.particulate_frame.place(x=250, y=300)
@@ -307,11 +309,11 @@ class MainFrame(tk.Frame):
                 if self.weather_per_hour[0][index][0] == '0' or self.weather_per_hour[0][index][0] == '1' or self.weather_per_hour[0][index][0]=='2':
                     time = int(self.weather_per_hour[0][index][:-1])
                     if (6<=time) and (time<=20):
-                        filename += '(낮)'
+                        filename += spam.addStrBracket("낮")
                     else:
-                        filename += '(밤)'
+                        filename += spam.addStrBracket("밤")
                 else:
-                    filename += '(밤)'
+                    filename += spam.addStrBracket("밤")
             if filename in self.weather_icon:
                 self.graph_canvas.create_image(x, 200, image = self.weather_icon[filename])
             else:
@@ -343,7 +345,7 @@ class MainFrame(tk.Frame):
             if filename_am == '황사' or filename_am == '안개' or filename_am == '맑음' or filename_am == '구름조금' or filename_am == '구름많음' or filename_am == '가끔 비' \
                     or filename_am == '비 후 갬' or filename_am == '눈 후 갬' or filename_am == '뇌우 후 갬' or filename_am == '가끔 비, 눈' or filename_am == '가끔 눈' \
                     or filename_am == '흐려져 비' or filename_am == '흐림 후 갬' or filename_am == '흐려져 눈':
-                filename_am+="(낮)"
+                filename_am+=spam.addStrBracket("낮")
             if filename_am in self.weather_icon:
                 tk.Label(self.week_forecast_frame[i],image = self.weather_icon[filename_am]).place(x=200,y=5)
             else:
@@ -357,7 +359,7 @@ class MainFrame(tk.Frame):
             if filename_pm == '황사' or filename_pm == '안개' or filename_pm == '맑음' or filename_pm == '구름조금' or filename_pm == '구름많음' or filename_pm == '가끔 비' \
                     or filename_pm == '비 후 갬' or filename_pm == '눈 후 갬' or filename_pm == '뇌우 후 갬' or filename_pm == '가끔 비, 눈' or filename_pm == '가끔 눈' \
                     or filename_pm == '흐려져 비' or filename_pm == '흐림 후 갬' or filename_pm == '흐려져 눈':
-                filename_pm += "(밤)"
+                filename_pm += spam.addStrBracket("밤")
             if filename_pm in self.weather_icon:
                 tk.Label(self.week_forecast_frame[i],image = self.weather_icon[filename_pm]).place(x=400,y=5)
             else:
@@ -567,6 +569,8 @@ class MainFrame(tk.Frame):
         self.weather_icon['흐리고 한때 비'] = tk.PhotoImage(file = "Resource\\WeatherIcon\\약한비.png")
         self.weather_icon['흐리고 한때 소나기'] = tk.PhotoImage(file="Resource\\WeatherIcon\\소나기.png")
         self.weather_icon['흐리고 비'] = tk.PhotoImage(file="Resource\\WeatherIcon\\비.png")
+        self.weather_icon['구름많고 한때 비'] = tk.PhotoImage(file="Resource\\WeatherIcon\\비.png")
+        self.weather_icon['구름많고 소나기'] = tk.PhotoImage(file="Resource\\WeatherIcon\\소나기.png")
 
     def LoadParticulateIcon(self):
         self.particulateIcon = list()
