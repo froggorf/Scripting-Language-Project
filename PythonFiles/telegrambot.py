@@ -6,11 +6,8 @@ class TelegramBot:
     __TOKEN = "6111372734:AAH-AdTXdJDTX7UDfRqdCFnVck1ewGi4-AM"
     __chat_id = "-1001944555399"
     @staticmethod
-    def sendParticulateMessage(location, main_option, changeInfo):  # 현재위치, 사용자가 켜둔 설정, 전과 달라진 정보들 모아둔 list
-        str = "/"
-        optionDict = main_option.__dict__
-        print("Run sendParticulateMessage!!")
-
+    def makeStr(changeInfo, optionDict):
+        str = '/'
         if not changeInfo:
             return
         for info in changeInfo:
@@ -21,10 +18,42 @@ class TelegramBot:
                     str += '초미세먼지 - '
                 else:
                     str += '오존 - '
-
                 str = str + textDict[info][0] + "/"
+        return str
 
-        sendText = datetime.today().strftime("%p %I:00 - ") + location + str
+    @staticmethod
+    def makeWeatherStr(changeInfo, optionDict):
+        str = ''
+        if not changeInfo:
+            return
+        for info in changeInfo:
+            if optionDict[info]:
+                str = str + textDict[info][0] + ", "
+                # if info == 'be_sunny':
+                #     str += ''
+                # elif info == 'be_rainy':
+                #     str += '3시간뒤 날씨 - '
+                # elif info == 'be_lighting':
+                #     str += '3시간뒤 날씨 - '
+                # elif info == 'be_cloudy':
+                #     str += '3시간뒤 날씨 - '
+                # elif info == 'be_hot':
+                #     str += '3시간뒤 온도 - '
+                # elif info == 'be_cold':
+                #     str += '3시간뒤 온도 - '
+        str = "3시간 뒤 날씨 - " + str
+        return str
+
+    @staticmethod
+    def sendParticulateMessage(location, main_option, changeInfo, changeWeatherInfo):  # 현재위치, 사용자가 켜둔 설정, 전과 달라진 정보들 모아둔 list
+        optionDict = main_option.__dict__
+        print("Run sendParticulateMessage!!")
+
+        myStr = TelegramBot.makeStr(changeInfo, optionDict)
+        myWStr = TelegramBot.makeWeatherStr(changeWeatherInfo, optionDict)
+
+        print(f'{location=}, {myStr=}, {myWStr=}')
+        sendText = datetime.today().strftime("%p %I:00 - ") + location + myStr + myWStr
 
         data = {"chat_id": TelegramBot.__chat_id, "text": sendText}
         url = f"https://api.telegram.org/bot{TelegramBot.__TOKEN}/sendMessage?"

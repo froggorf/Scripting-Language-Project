@@ -214,7 +214,7 @@ class MainFrame(tk.Frame):
         self.particulate_besunny_button     = tk.Button(self.weather_frame, text="맑음", font=temp_font, command=lambda: self.pressChangeOption("beSunny"))
         self.particulate_berainy_button     = tk.Button(self.weather_frame, text=" 비 ", font=temp_font, command=lambda: self.pressChangeOption("beRainy"))
         self.particulate_belighting_button  = tk.Button(self.weather_frame, text="천둥", font=temp_font, command=lambda: self.pressChangeOption("beLighting"))
-        self.particulate_befoggy_button     = tk.Button(self.weather_frame, text="흐림", font=temp_font, command=lambda: self.pressChangeOption("beFoggy"))
+        self.particulate_befoggy_button     = tk.Button(self.weather_frame, text="흐림", font=temp_font, command=lambda: self.pressChangeOption("beCloudy"))
         self.particulate_besunny_button.pack(side=tk.LEFT)
         self.particulate_berainy_button.pack(side=tk.LEFT)
         self.particulate_belighting_button.pack(side=tk.LEFT)
@@ -260,6 +260,8 @@ class MainFrame(tk.Frame):
         self.set_optionButton()
 
 
+        weathers = naverweather.GetWeatherInformation()
+        self.weather_per_hour = weathers[3]
 
         self.timer()
 
@@ -463,17 +465,51 @@ class MainFrame(tk.Frame):
     def timer(self):
         nowTimeHour = datetime.now().hour
         # 정각에 바로 정보를 업데이트되는건 아니라 15분까지 대기
-        if datetime.now().minute == 15:
+        if datetime.now().minute == 27:
+            self.currentTimeHour -= 1
             if nowTimeHour != self.currentTimeHour:
                 print(f"Run the Timer")
+                newWeather = naverweather.GetWeatherInformation()
+
                 GetTimeText()
                 diffList = self.particulate.getRenewalInfo()
+                diffWeather = self.getWeatherRenewalInfo(newWeather[3][1])
+                diffTempu = self.getTempuratureRenewalInfo(newWeather[3][2])
+                weatherList = diffWeather + diffTempu
                 # text = self.telegram.makeParticulateToStr(diffList)
-                self.telegram.sendParticulateMessage(self.location, self.main_option, diffList)
+
+
+                diffList = ['beGreat_pm25', 'beNormal_pm10', 'beTooBad_o3']
+                weatherList = ['beRainy', 'beCold']
+
+                self.telegram.sendParticulateMessage(newWeather[0], self.main_option, diffList, weatherList)
+
                 self.currentTimeHour = nowTimeHour
+                self.weather_per_hour = newWeather
+
                 self.changeParticulateImage()
                 self.tab0_frame.update()
         self.tab0_time_label.after(1000 * 60, self.timer)
+
+    def getWeatherRenewalInfo(self, newWeather):
+        # print('Weather= ',newWeather)
+        if newWeather[3] == '맑음':
+            return ['beSunny']
+        elif newWeather[3] == '비':
+            return ['beRainy']
+        elif newWeather[3] == '천둥':
+            return ['beLighting']
+        elif newWeather[3] == '흐림':
+            return ['beCloudy']
+
+    def getTempuratureRenewalInfo(self, newWeather):
+        # print('Tempurature= ',newWeather)
+        # print('@@@', self.weather_per_hour[2])
+        nowTemp = self.weather_per_hour[2][3]
+        if newWeather[3] - nowTemp > 5:
+            return ['beHot']
+        elif newWeather[3] - nowTemp < 5:
+            return ['beCold']
 
     # ===============================tab3 관련 함수 + 미세먼지===============================
     def pressCancel(self):

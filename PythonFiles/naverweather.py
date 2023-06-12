@@ -24,7 +24,8 @@ def GetWeatherInformation():
     temperature_per_hour = GetTemperaturePer2Hour(soup.find("div",{"class":"forecast_wrap _selectable_tab"}))
 
     #GetWeekWeatherForecast(soup)
-
+    # print(f'{location=}, {temperature=}')
+    # print(temperature_per_hour)
     return location,temperature,weather_state, temperature_per_hour
 
 def GetTemperaturePer2Hour(soup):
